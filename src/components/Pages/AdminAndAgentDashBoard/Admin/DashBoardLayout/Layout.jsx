@@ -18,7 +18,8 @@ import {
   DollarSign,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, useNavigate } from "react-router";
+import toast, { Toaster } from "react-hot-toast";
 const Layout = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -126,8 +127,23 @@ const Layout = () => {
     };
   }, []);
 
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    localStorage.removeItem("accessToken");
+
+    toast.success("Logged out successfully!");
+
+    setTimeout(() => {
+      navigate('/admin-login');
+    }, 1500);
+  };
+
+
+
   return (
     <div className="h-screen flex overflow-hidden bg-[#fdfafb]">
+      <Toaster position="top-right" reverseOrder={false} />
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity"
@@ -141,7 +157,7 @@ const Layout = () => {
       >
         <div className="py-2 px-3 flex items-center justify-between flex-shrink-0">
           <h1 className="text-xl font-bold text-red-600 tracking-tight">
-            <img src={logo} className="size-12" alt="" /> 
+            <img src={logo} className="size-12" alt="" />
             {/* Pura <span className="text-rose-500">VidaX</span> */}
           </h1>
           <button
@@ -181,7 +197,7 @@ const Layout = () => {
         </nav>
 
         <div className="p-4 border-t border-gray-100 flex-shrink-0">
-          <button className="flex items-center gap-3 text-red-600 hover:bg-red-50 w-full px-4 py-2.5 rounded-lg transition-colors text-sm font-medium">
+          <button onClick={handleLogOut} className="flex items-center gap-3 text-red-600 hover:bg-red-50 w-full px-4 py-2.5 rounded-lg transition-colors text-sm font-medium">
             <LogOut size={18} /> Sign Out
           </button>
         </div>
@@ -255,7 +271,7 @@ const Layout = () => {
                     Account Settings
                   </button>
                   <div className="h-px bg-gray-100 my-1 mx-2"></div>
-                  <button className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                  <button onClick={handleLogOut} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
                     <LogOut size={16} />
                     Logout
                   </button>
