@@ -1,7 +1,9 @@
+import { Outlet } from "react-router";
+
 const Root = () => {
     return (
-        <div className="">
-            dsaf
+        <div>
+           <Outlet></Outlet>
         </div>
     );
 };
