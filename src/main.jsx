@@ -9,6 +9,8 @@ import Root from "./components/Root/Root";
 import Layout from "./components/Pages/AdminAndAgentDashBoard/Admin/DashBoardLayout/Layout";
 import AllUser from "./components/Pages/AdminAndAgentDashBoard/Admin/ManagerUser/AllUser";
 import AllTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/ManagerUser/AllTransaction";
+import Login from "./components/Pages/Authentication/Login/Login";
+import AdminPrivateRoute from "./components/Pages/PrivateRoute/AdminPrivateRoute";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +21,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Layout></Layout>,
+        element: <AdminPrivateRoute><Layout></Layout></AdminPrivateRoute>,
         children: [
           {
             path: '/all-users',
@@ -35,6 +37,10 @@ const router = createBrowserRouter([
       }
 
     ]
+  },
+  {
+    path : "/admin-login",
+    element : <Login></Login>
   }
 ]);
 
