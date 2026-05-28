@@ -10,7 +10,7 @@ const AllTransaction = () => {
     const { data: transactionResponse, isLoading, refetch } = useQuery({
         queryKey: ["transactions"],
         queryFn: async () => {
-            const response = await axios.get("http://72.61.225.177:5000/api/v1/transaction", {
+            const response = await axios.get("https://api.bibah.app/api/v1/transaction", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
@@ -20,7 +20,7 @@ const AllTransaction = () => {
     const handleStatusChange = async (transactionId, newStatus) => {
         try {
             await axios.patch(
-                `http://72.61.225.177:5000/api/v1/transaction/status/${transactionId}`,
+                `https://api.bibah.app/api/v1/transaction/status/${transactionId}`,
                 { status: newStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -35,7 +35,7 @@ const AllTransaction = () => {
     const handleDelete = async (transactionId) => {
         if (window.confirm("Are you sure you want to delete this transaction?")) {
             try {
-                await axios.delete(`http://72.61.225.177:5000/api/v1/transaction/${transactionId}`, {
+                await axios.delete(`https://api.bibah.app/api/v1/transaction/${transactionId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 refetch();

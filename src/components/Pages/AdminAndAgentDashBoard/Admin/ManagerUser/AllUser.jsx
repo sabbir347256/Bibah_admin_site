@@ -11,7 +11,7 @@ const AllUser = () => {
     const { data: usersResponse, isLoading } = useQuery({
         queryKey: ["users"],
         queryFn: async () => {
-            const response = await axios.get("http://72.61.225.177:5000/api/v1/user");
+            const response = await axios.get("https://api.bibah.app/api/v1/user");
             return response.data;
         },
     });
@@ -21,7 +21,7 @@ const AllUser = () => {
     const handleStatusChange = async (userId, newStatus) => {
         try {
             await axios.patch(
-                `http://72.61.225.177:5000/api/v1/user/status/${userId}`,
+                `https://api.bibah.app/api/v1/user/status/${userId}`,
                 { status: newStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -36,7 +36,7 @@ const AllUser = () => {
     const handleDelete = async (userId) => {
         if (window.confirm("Are you sure you want to delete this user?")) {
             try {
-                await axios.delete(`http://72.61.225.177:5000/api/v1/user/${userId}`, {
+                await axios.delete(`https://api.bibah.app/api/v1/user/${userId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 queryClient.invalidateQueries(["users"]);
