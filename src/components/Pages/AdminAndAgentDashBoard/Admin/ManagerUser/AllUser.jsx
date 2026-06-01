@@ -3,6 +3,7 @@ import DynamicHeader from "../../../DynamicComponent/DynamicHeader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import config from "../../../utilies/envCongig";
 
 const AllUser = () => {
     const queryClient = useQueryClient();
@@ -11,7 +12,7 @@ const AllUser = () => {
     const { data: usersResponse, isLoading } = useQuery({
         queryKey: ["users"],
         queryFn: async () => {
-            const response = await axios.get("https://api.bibah.app/api/v1/user");
+            const response = await axios.get(`${config.backendUrl}/user`);
             return response.data;
         },
     });
@@ -21,7 +22,7 @@ const AllUser = () => {
     const handleStatusChange = async (userId, newStatus) => {
         try {
             await axios.patch(
-                `https://api.bibah.app/api/v1/user/status/${userId}`,
+                `${config.backendUrl}/user/status/${userId}`,
                 { status: newStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -36,7 +37,7 @@ const AllUser = () => {
     const handleDelete = async (userId) => {
         if (window.confirm("Are you sure you want to delete this user?")) {
             try {
-                await axios.delete(`https://api.bibah.app/api/v1/user/${userId}`, {
+                await axios.delete(`${config.backendUrl}/user/${userId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 queryClient.invalidateQueries(["users"]);
@@ -68,8 +69,8 @@ const AllUser = () => {
                     subHeaderName={`${tableData.length} total users`}
                 />
             </div>
-            <div className="bg-[#fffbfb] min-h-screen mt-4 overflow-x-auto w-full">
-                <table className="min-w-full divide-y divide-gray-200">
+            <div className="bg-[#fffbfb] min-h-screen mt-4 overflow-x-auto w-full px-6">
+                <table className="min-w-full divide-y divide-gray-200 border">
                     <thead className="bg-gray-50">
                         <tr>
                             {/* <th className="px-6 py-3 text-left">

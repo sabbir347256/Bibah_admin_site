@@ -18,7 +18,7 @@ const AuthContext = ({ children }) => {
   const loading = false;
   
   const authInfo = {
-    setToken,
+    token,
     user,
     role: user?.role,
     loading

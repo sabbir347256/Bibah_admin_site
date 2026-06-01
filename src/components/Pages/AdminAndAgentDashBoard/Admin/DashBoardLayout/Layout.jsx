@@ -53,18 +53,18 @@ const Layout = () => {
         // { path: "/cars", label: "Car Rentals", icon: Car },
       ],
     },
-    // {
-    //   section: "Supplier",
-    //   items: [
-    //     {
-    //       path: "/manual-hotel-booking",
-    //       label: "Add Hotel",
-    //       icon: LayoutDashboard,
-    //     },
-    //     { path: "/manual-flights", label: "Add Flights", icon: Plane },
-    //     { path: "/manual-car", label: "Add Car", icon: Car },
-    //   ],
-    // },
+    {
+      section: "Create Agent",
+      items: [
+        {
+          path: "/agent-registration",
+          label: "Agent Registration",
+          icon: LayoutDashboard,
+        },
+        // { path: "/manual-flights", label: "Add Flights", icon: Plane },
+        // { path: "/manual-car", label: "Add Car", icon: Car },
+      ],
+    },
     // {
     //   section: "AI PART",
     //   items: [
@@ -281,7 +281,7 @@ const Layout = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 bg-[#fffbfb]">
+        <main className="flex-1 overflow-y-auto bg-[#fffbfb]">
           <div>
             <Outlet />
           </div>

@@ -3,6 +3,7 @@ import DynamicHeader from "../../../DynamicComponent/DynamicHeader";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import config from "../../../utilies/envCongig";
 
 const AllTransaction = () => {
     const token = localStorage.getItem("accessToken");
@@ -10,7 +11,7 @@ const AllTransaction = () => {
     const { data: transactionResponse, isLoading, refetch } = useQuery({
         queryKey: ["transactions"],
         queryFn: async () => {
-            const response = await axios.get("https://api.bibah.app/api/v1/transaction", {
+            const response = await axios.get(`${config.backendUrl}/transaction`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
@@ -20,7 +21,7 @@ const AllTransaction = () => {
     const handleStatusChange = async (transactionId, newStatus) => {
         try {
             await axios.patch(
-                `https://api.bibah.app/api/v1/transaction/status/${transactionId}`,
+                `${config.backendUrl}/transaction/status/${transactionId}`,
                 { status: newStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -35,7 +36,7 @@ const AllTransaction = () => {
     const handleDelete = async (transactionId) => {
         if (window.confirm("Are you sure you want to delete this transaction?")) {
             try {
-                await axios.delete(`https://api.bibah.app/api/v1/transaction/${transactionId}`, {
+                await axios.delete(`${config.backendUrl}/transaction/${transactionId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 refetch();
@@ -67,8 +68,8 @@ const AllTransaction = () => {
                     subHeaderName={`${tableData.length} total transactions`}
                 />
             </div>
-            <div className="bg-[#fffbfb] min-h-screen mt-4 overflow-x-auto w-full">
-                <table className="min-w-full divide-y divide-gray-200">
+            <div className="bg-[#fffbfb] min-h-screen mt-4 overflow-x-auto w-full px-6">
+                <table className="min-w-full divide-y divide-gray-200 border">
                     <thead className="bg-gray-50">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import toast, { Toaster } from 'react-hot-toast';
 import Button from '../../utilies/Button';
+import config from '../../utilies/envCongig';
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -20,7 +21,7 @@ const Login = () => {
         setApiError('');
         setIsLoading(true);
         try {
-            const response = await fetch('https://api.bibah.app/api/v1/auth/login', {
+            const response = await fetch(`${config.backendUrl}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
