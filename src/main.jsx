@@ -12,6 +12,7 @@ import AllTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/Mana
 import Login from "./components/Pages/Authentication/Login/Login";
 import AdminPrivateRoute from "./components/Pages/PrivateRoute/AdminPrivateRoute";
 import CreateAgent from "./components/Pages/AdminAndAgentDashBoard/Admin/CreateAgent/CreateAgent";
+import Profile from "./components/Pages/Shared/Profile";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,11 @@ const router = createBrowserRouter([
           {
             path: '/agent-registration',
             element: <CreateAgent></CreateAgent>
+          }
+          ,
+          {
+            path: '/profile',
+            element: <Profile></Profile>
           }
           ,
         ]

@@ -1,4 +1,5 @@
 import { LayoutDashboard, Plane, Hotel, Car, Map, Star, Users, Shield, Tag, LogOut } from 'lucide-react';
+import SidebarItem from './SidebarItem';
 const Sidebar = () => {
   return (
     <aside className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col fixed left-0 top-0 overflow-y-auto">
