@@ -73,10 +73,8 @@ const AllUser = () => {
                 <table className="min-w-full divide-y divide-gray-200 border">
                     <thead className="bg-gray-50">
                         <tr>
-                            {/* <th className="px-6 py-3 text-left">
-                                <input type="checkbox" />
-                            </th> */}
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SL</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Number</th>
@@ -87,10 +85,8 @@ const AllUser = () => {
                     <tbody className="bg-white divide-y divide-gray-200">
                         {tableData.map((user, index) => (
                             <tr key={user._id}>
-                                {/* <td className="px-6 py-4">
-                                    <input type="checkbox" />
-                                </td> */}
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{index + 1}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user?.userID}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.fullName}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.email}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.contactNo}</td>

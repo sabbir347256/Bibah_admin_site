@@ -50,6 +50,7 @@ const AllTransaction = () => {
 
     const tableData = transactionResponse?.data || [];
     const filterTableData = tableData?.filter(data => data?.isDeleted === false);
+    
 
     if (isLoading) {
         return (
@@ -72,7 +73,9 @@ const AllTransaction = () => {
                 <table className="min-w-full divide-y divide-gray-200 border">
                     <thead className="bg-gray-50">
                         <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SL</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
@@ -81,10 +84,16 @@ const AllTransaction = () => {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filterTableData?.map((transaction) => (
+                        {filterTableData?.map((transaction,index) => (
                             <tr key={transaction._id}>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {index + 1}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {transaction.userId}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {transaction?.userObjectId?.role}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {transaction.phoneNumber}

@@ -16,6 +16,7 @@ import {
   User,
   ChevronDown,
   DollarSign,
+  VerifiedIcon,
 } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
@@ -91,12 +92,17 @@ const Layout = () => {
     },
     ...(user?.role === "ADMIN" ? [
       {
-        section: "Create Agent",
+        section: "Agent Function",
         items: [
           {
             path: "/agent-registration",
             label: "Agent Registration",
-            icon: LayoutDashboard, // আপনি চাইলে এখানে UserPlus বা অন্য কোনো আইকন দিতে পারেন
+            icon: LayoutDashboard, 
+          },
+          {
+            path: "/field-verification",
+            label: "Add Field Verification",
+            icon: VerifiedIcon, 
           },
         ],
       }
@@ -210,10 +216,10 @@ const Layout = () => {
 
 
   const mainAmount = data?.data?.mainWalletBalance || 0;
-  const bonusAmount = data?.data?.isActive === 'INACTIVE' ? 0 : data?.data?.bonusWalletPoints;
+  // const bonusAmount = data?.data?.isActive === 'INACTIVE' ? 0 : data?.data?.bonusWalletPoints;
   const referralAmount = data?.data?.agentReferWalletPoints || 0;
   const totalAmount = user
-    ? (mainAmount || 0) + (bonusAmount || 0) + (referralAmount || 0)
+    ? (mainAmount || 0)  + (referralAmount || 0)
     : 0;
 
 
@@ -335,10 +341,10 @@ const Layout = () => {
                       <span className="text-sm text-gray-600">Main Balance</span>
                       <span className="font-semibold text-gray-900">৳ {mainAmount}</span>
                     </div>
-                    <div className="flex justify-between items-center py-1.5 border-b border-gray-50">
+                    {/* <div className="flex justify-between items-center py-1.5 border-b border-gray-50">
                       <span className="text-sm text-gray-600">Bonus Balance</span>
                       <span className="font-semibold text-emerald-600">৳ {bonusAmount}</span>
-                    </div>
+                    </div> */}
                     <div className="flex justify-between items-center py-1.5">
                       <span className="text-sm text-gray-600">Referral Earn</span>
                       <span className="font-semibold text-indigo-600">৳ {referralAmount}</span>

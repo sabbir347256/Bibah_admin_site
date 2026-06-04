@@ -13,6 +13,7 @@ import Login from "./components/Pages/Authentication/Login/Login";
 import AdminPrivateRoute from "./components/Pages/PrivateRoute/AdminPrivateRoute";
 import CreateAgent from "./components/Pages/AdminAndAgentDashBoard/Admin/CreateAgent/CreateAgent";
 import Profile from "./components/Pages/Shared/Profile";
+import VerificationInformationAdd from "./components/Pages/AdminAndAgentDashBoard/Agent/verificationInformation/VerificationInformationAdd";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,11 @@ const router = createBrowserRouter([
           {
             path: '/profile',
             element: <Profile></Profile>
+          }
+          ,
+          {
+            path: '/field-verification',
+            element: <VerificationInformationAdd></VerificationInformationAdd>
           }
           ,
         ]
