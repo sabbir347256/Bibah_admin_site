@@ -30,8 +30,33 @@ const Layout = () => {
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
 
-
   const walletRef = useRef(null);
+  const mobileWalletRef = useRef(null);
+  const menuButtonRef = useRef(null);
+  const mobileMenuRef = useRef(null);
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const clickedInsideButton = menuButtonRef.current && menuButtonRef.current.contains(event.target);
+      const clickedInsideMenu = mobileMenuRef.current && mobileMenuRef.current.contains(event.target);
+      if (!clickedInsideButton && !clickedInsideMenu) {
+        setIsOpen(false);
+      }
+
+      const clickedInsideDesktopWallet = walletRef.current && walletRef.current.contains(event.target);
+      const clickedInsideMobileWallet = mobileWalletRef.current && mobileWalletRef.current.contains(event.target);
+      if (!clickedInsideDesktopWallet && !clickedInsideMobileWallet) {
+        setIsWalletOpen(false);
+      }
+
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
 
   useEffect(() => {
@@ -43,13 +68,14 @@ const Layout = () => {
   }, []);
 
   const menuItems = [
-    {
-      section: "OVERVIEW",
-      items: [
-        { path: "/", label: "Dashboard", icon: LayoutDashboard },
-        // { path: "/analytics", label: "Analytics", icon: Shield },
-      ],
-    },
+    ...(user?.role === "ADMIN" ? [
+      {
+        section: "OVERVIEW",
+        items: [
+          { path: "/", label: "Dashboard", icon: LayoutDashboard },
+        ],
+      }
+    ] : []),
     {
       section: "USER MANAGE",
       items: [
@@ -57,25 +83,24 @@ const Layout = () => {
           path: "/all-users",
           label: "All Users",
           icon: Users2,
-          // badge: "12",
         },
-        { path: "/all-transaction", label: "All Transaction", icon: DollarSign },
-        // { path: "/hotels", label: "Hotels", icon: Hotel },
-        // { path: "/cars", label: "Car Rentals", icon: Car },
+        ...(user?.role === "ADMIN" ? [
+          { path: "/all-transaction", label: "All Transaction", icon: DollarSign }
+        ] : []),
       ],
     },
-    {
-      section: "Create Agent",
-      items: [
-        {
-          path: "/agent-registration",
-          label: "Agent Registration",
-          icon: LayoutDashboard,
-        },
-        // { path: "/manual-flights", label: "Add Flights", icon: Plane },
-        // { path: "/manual-car", label: "Add Car", icon: Car },
-      ],
-    },
+    ...(user?.role === "ADMIN" ? [
+      {
+        section: "Create Agent",
+        items: [
+          {
+            path: "/agent-registration",
+            label: "Agent Registration",
+            icon: LayoutDashboard, // আপনি চাইলে এখানে UserPlus বা অন্য কোনো আইকন দিতে পারেন
+          },
+        ],
+      }
+    ] : []),
     // {
     //   section: "AI PART",
     //   items: [
@@ -123,6 +148,7 @@ const Layout = () => {
     //   ],
     // },
   ];
+
   const [porfileopen, setporfileopen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -182,9 +208,10 @@ const Layout = () => {
     }, 1500);
   };
 
+
   const mainAmount = data?.data?.mainWalletBalance || 0;
   const bonusAmount = data?.data?.isActive === 'INACTIVE' ? 0 : data?.data?.bonusWalletPoints;
-  const referralAmount = user?.wallet?.referralBalance || 0;
+  const referralAmount = data?.data?.agentReferWalletPoints || 0;
   const totalAmount = user
     ? (mainAmount || 0) + (bonusAmount || 0) + (referralAmount || 0)
     : 0;

@@ -17,7 +17,7 @@ const AdminPrivateRoute = ({children}) => {
         );
     }
 
-    if (user && user.role === 'ADMIN') {
+    if (user && (user.role === 'ADMIN' || user.role === "AGENT") ) {
         return children;
     }
 
