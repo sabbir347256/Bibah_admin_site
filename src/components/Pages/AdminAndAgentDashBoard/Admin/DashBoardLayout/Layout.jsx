@@ -299,7 +299,7 @@ const Layout = () => {
             className="flex items-center gap-4 md:justify-end w-full"
             ref={dropdownRef}
           >
-            <div className="flex items-center gap-3 pr-4 border-r border-red-100">
+            {/* <div className="flex items-center gap-3 pr-4 border-r border-red-100">
               <button className="relative p-1 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors">
                 <Bell size={20} fill="currentColor" className="text-gray-700 hover:text-red-600" />
                 <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-600 border-2 border-white rounded-full"></span>
@@ -312,7 +312,7 @@ const Layout = () => {
                   className="text-gray-700 hover:text-red-600"
                 />
               </button>
-            </div>
+            </div> */}
 
             <div className="relative" ref={walletRef}>
               {
@@ -395,10 +395,10 @@ const Layout = () => {
                     <User size={16} className="text-gray-500" />
                     My Profile
                   </NavLink>
-                  <button className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">
+                  {/* <button className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">
                     <Settings size={16} className="text-gray-500" />
                     Account Settings
-                  </button>
+                  </button> */}
                   <div className="h-px bg-gray-100 my-1 mx-2"></div>
                   <button onClick={handleLogOut} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
                     <LogOut size={16} />

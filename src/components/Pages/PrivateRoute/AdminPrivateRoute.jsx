@@ -7,8 +7,6 @@ const AdminPrivateRoute = ({children}) => {
     const { user, loading } = useContext(AuthProvider);
     const location = useLocation();
 
-    console.log(user)
-
     if (loading) {
         return (
             <div className="h-screen w-full flex items-center justify-center">

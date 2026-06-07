@@ -39,11 +39,13 @@ const AuthContext = ({ children }) => {
 
   const authInfo = {
     setToken,
+    isLoading,
     token,
     user,
     role: user?.role,
     loading,
-    data
+    data,
+    refetch
   };
 
 
