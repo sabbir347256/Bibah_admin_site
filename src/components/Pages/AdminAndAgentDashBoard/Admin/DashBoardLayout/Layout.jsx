@@ -17,6 +17,7 @@ import {
   ChevronDown,
   DollarSign,
   VerifiedIcon,
+  DockIcon,
 } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
@@ -87,6 +88,9 @@ const Layout = () => {
         },
         ...(user?.role === "ADMIN" ? [
           { path: "/all-transaction", label: "All Transaction", icon: DollarSign }
+        ] : []),
+        ...(user?.role === "ADMIN" ? [
+          { path: "/all-document", label: "All Nid Documents", icon: DockIcon }
         ] : []),
       ],
     },

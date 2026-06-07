@@ -14,6 +14,7 @@ import AdminPrivateRoute from "./components/Pages/PrivateRoute/AdminPrivateRoute
 import CreateAgent from "./components/Pages/AdminAndAgentDashBoard/Admin/CreateAgent/CreateAgent";
 import Profile from "./components/Pages/Shared/Profile";
 import VerificationInformationAdd from "./components/Pages/AdminAndAgentDashBoard/Agent/verificationInformation/VerificationInformationAdd";
+import NidDocument from "./components/Pages/AdminAndAgentDashBoard/Admin/ManagerUser/NidDocument";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,11 @@ const router = createBrowserRouter([
           {
             path: '/field-verification',
             element: <VerificationInformationAdd></VerificationInformationAdd>
+          }
+          ,
+          {
+            path: '/all-document',
+            element: <NidDocument></NidDocument>
           }
           ,
         ]

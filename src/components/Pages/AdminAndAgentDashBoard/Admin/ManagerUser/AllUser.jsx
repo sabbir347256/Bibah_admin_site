@@ -4,20 +4,25 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import config from "../../../utilies/envCongig";
+import { useCustomQuery } from "../../../utilies/useCustomQuery";
 
 const AllUser = () => {
     const queryClient = useQueryClient();
     const token = localStorage.getItem("accessToken");
 
-    const { data: usersResponse, isLoading } = useQuery({
+    // const { data: usersResponse, isLoading } = useQuery({
+    //     queryKey: ["users"],
+    //     queryFn: async () => {
+    //         const response = await axios.get(`${config.backendUrl}/user`);
+    //         return response.data;
+    //     },
+    // });
+
+    const { data: usersResponse, isLoading } = useCustomQuery({
         queryKey: ["users"],
-        queryFn: async () => {
-            const response = await axios.get(`${config.backendUrl}/user`);
-            return response.data;
-        },
+        url: `${config.backendUrl}/user`,
     });
 
-    console.log(usersResponse)
 
     const handleStatusChange = async (userId, newStatus) => {
         try {
