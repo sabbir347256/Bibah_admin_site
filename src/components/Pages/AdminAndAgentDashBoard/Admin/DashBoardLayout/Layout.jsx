@@ -2,17 +2,10 @@ import SidebarItem from "../../../Shared/SidebarItem";
 import logo from '../../../../../assets/images/logo.jpeg'
 import {
   LayoutDashboard,
-
-
-
-  Settings,
   LogOut,
   Menu,
   X,
-
   Users2,
-
-  Bell,
   User,
   ChevronDown,
   DollarSign,
@@ -26,6 +19,7 @@ import { AuthProvider } from "../../../../AuthProvider/CreateContext";
 import config from "../../../utilies/envCongig";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import { useApiHeader } from "../../../utilies/token";
 const Layout = () => {
   const { user, data } = useContext(AuthProvider);
   const [isOpen, setIsOpen] = useState(false);
@@ -101,12 +95,12 @@ const Layout = () => {
           {
             path: "/agent-registration",
             label: "Agent Registration",
-            icon: LayoutDashboard, 
+            icon: LayoutDashboard,
           },
           {
             path: "/field-verification",
             label: "Add Field Verification",
-            icon: VerifiedIcon, 
+            icon: VerifiedIcon,
           },
         ],
       }
@@ -174,33 +168,73 @@ const Layout = () => {
     };
   }, []);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
+  // const onSubmit = async (data) => {
+  //   const token = localStorage.getItem("accessToken");
+  //   try {
+  //     await axios.post(
+  //       `${config?.backendUrl}/transaction`,
+  //       {
+  //         userObjectId: user?.userId,
+  //         userId: user?.userProfileId,
+  //         transactionId: data.transactionId,
+  //         phoneNumber: data.phoneNumber,
+  //         amount: data.amount,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     toast.success("Recharge request submitted successfully!");
+  //     reset();
+  //     setIsRechargeOpen(false);
+  //   } catch (error) {
+  //     toast.error(error?.response?.data?.message || "Failed to submit request");
+  //   }
+  // };
 
 
+  const [loadingPayment, setLoadingPayment] = useState(false);
 
-  const onSubmit = async (data) => {
+  const onRechargeSubmit = async (formData) => {
+    setLoadingPayment(true);
     const token = localStorage.getItem("accessToken");
+
     try {
-      await axios.post(
-        `${config?.backendUrl}/transaction`,
-        {
-          userObjectId: user?.userId,
-          userId: user?.userProfileId,
-          transactionId: data.transactionId,
-          phoneNumber: data.phoneNumber,
-          amount: data.amount,
-        },
+      const paymentPayload = {
+        userObjectId: user?.userId,
+        userId: user?.userProfileId,
+        amount: formData.amount,
+        name: user?.name,
+        email: user?.email,
+        phone: user?.phone,
+        originUrl: window.location.origin
+      };
+
+      const response = await axios.post(
+        `${config?.backendUrl}/transaction/initiate-paystation`,
+        paymentPayload,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      toast.success("Recharge request submitted successfully!");
-      reset();
-      setIsRechargeOpen(false);
+
+      if (response.data.success && response.data.payment_url) {
+        toast.success("Redirecting to PayStation...");
+        window.location.assign(response.data.payment_url);
+      } else {
+        toast.error("Could not initiate payment");
+      }
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Failed to submit request");
+      toast.error(error?.response?.data?.message || "Payment initialization failed");
+    } finally {
+      setLoadingPayment(false);
+      setIsRechargeOpen(false);
+      reset();
     }
   };
 
@@ -218,15 +252,42 @@ const Layout = () => {
     }, 1500);
   };
 
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+
 
   const mainAmount = data?.data?.mainWalletBalance || 0;
-  // const bonusAmount = data?.data?.isActive === 'INACTIVE' ? 0 : data?.data?.bonusWalletPoints;
   const referralAmount = data?.data?.agentReferWalletPoints || 0;
+  const totalamount = data?.data?.totalAmount || 0;
+
   const totalAmount = user
-    ? (mainAmount || 0)  + (referralAmount || 0)
+    ? (mainAmount || 0) + (referralAmount || 0)
     : 0;
 
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
+
+
+  const apiHeader = useApiHeader();
+
+  const onSubmit = async (formData) => {
+    try {
+      const response = await axios.post(`${config.backendUrl}/withdraw/amountWithdraw`, formData, apiHeader);
+      const result = response.data;
+
+      if (result.success) {
+        setIsWithdrawOpen(false);
+        reset();
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        alert(error.response.data.message || 'Something went wrong');
+      } else {
+        console.error(error);
+      }
+    }
+  };
 
   return (
     <div className="h-screen flex overflow-hidden bg-[#fdfafb]">
@@ -329,7 +390,7 @@ const Layout = () => {
                   </svg>
                   <div className="text-left leading-tight">
                     <span className="block text-[9px] uppercase tracking-wider opacity-90">Wallet</span>
-                    <span className="text-xs font-bold">৳ {totalAmount}</span>
+                    <span className="text-xs font-bold">৳ {totalamount}</span>
                   </div>
                   <svg xmlns="http://www.w3.org/2000/svg" className={`h-3.5 w-3.5 transition-transform duration-200 ${isWalletOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -342,23 +403,33 @@ const Layout = () => {
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Balance Details</h4>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center py-1.5 border-b border-gray-50">
-                      <span className="text-sm text-gray-600">Main Balance</span>
-                      <span className="font-semibold text-gray-900">৳ {mainAmount}</span>
+                      <span className="text-sm text-gray-600">Total Balance</span>
+                      <span className="font-semibold text-gray-900">৳ {totalamount}</span>
                     </div>
                     {/* <div className="flex justify-between items-center py-1.5 border-b border-gray-50">
                       <span className="text-sm text-gray-600">Bonus Balance</span>
                       <span className="font-semibold text-emerald-600">৳ {bonusAmount}</span>
                     </div> */}
-                    <div className="flex justify-between items-center py-1.5">
+                    {/* <div className="flex justify-between items-center py-1.5">
                       <span className="text-sm text-gray-600">Referral Earn</span>
                       <span className="font-semibold text-indigo-600">৳ {referralAmount}</span>
                     </div>
+                    <div className="flex justify-between items-center py-1.5">
+                      <span className="text-sm text-gray-600">Total Amount</span>
+                      <span className="font-semibold text-indigo-600">৳ {totalamount}</span>
+                    </div> */}
                   </div>
                   <button
                     onClick={() => setIsRechargeOpen(true)}
                     className="bg-red-600 text-white hover:bg-red-800 duration-100 p-2 rounded-xl w-full mt-2"
                   >
                     Recharge
+                  </button>
+                  <button
+                    onClick={() => setIsWithdrawOpen(true)}
+                    className="bg-indigo-600 text-white hover:bg-indigo-800 duration-100 p-2 rounded-xl w-full mt-2 text-sm font-medium"
+                  >
+                    Withdraw
                   </button>
                 </div>
               )}
@@ -416,67 +487,146 @@ const Layout = () => {
 
 
         {isRechargeOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] px-4">
-            <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+          <div className="modal modal-open fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-all duration-300">
+            <div className="modal-box bg-white max-w-sm w-full rounded-2xl p-6 relative border border-gray-100 shadow-2xl transform transition-all scale-100 animate-in fade-in zoom-in-95 duration-200">
               <button
                 onClick={() => setIsRechargeOpen(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold"
+                className="btn btn-sm btn-circle btn-ghost absolute right-3 top-3 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
               >
-                &times;
+                ✕
               </button>
-              <h3 className="text-lg font-bold text-gray-990 mb-2">Recharge Account</h3>
-              <p className="text-sm text-gray-600 bg-red-50 text-red-800 p-3 rounded-xl mb-4 font-medium">
-                Please Payment to <span className="font-bold text-red-600">01711651471</span> via bKash, then submit your Transaction ID and Mobile Number below.
-              </p>
+
+              <div className="flex flex-col items-center mb-6">
+                <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center text-red-600 mb-3 border border-red-100/50">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6A2.25 2.25 0 0 1 18.75 20H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
+                  </svg>
+                </div>
+                <h3 className="font-extrabold text-xl text-gray-800 text-center">Recharge Wallet</h3>
+                <p className="text-xs text-gray-400 text-center mt-1">Add funds securely to your account</p>
+              </div>
+
+              <form onSubmit={handleSubmit(onRechargeSubmit)} className="space-y-5">
+                <div className="form-control w-full">
+                  <label className="label py-1">
+                    <span className="label-text font-semibold text-gray-600 text-xs uppercase tracking-wider">Enter Amount (BDT)</span>
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-4 text-gray-400 font-bold text-lg select-none">৳</span>
+                    <input
+                      type="number"
+                      placeholder="e.g. 500"
+                      className={`input w-full pl-9 pr-4 py-6 bg-gray-50/80 text-gray-900 font-bold text-lg rounded-xl border border-gray-200 focus:outline-none focus:border-red-500 focus:bg-white transition-all duration-200 ${errors.amount ? 'border-red-500 bg-red-50/10 focus:border-red-500' : ''}`}
+                      {...register("amount", {
+                        required: "Amount is required",
+                        // min: { value: 10, message: "Minimum recharge amount is ৳10" }
+                      })}
+                    />
+                  </div>
+                  {errors.amount && (
+                    <div className="flex items-center gap-1 mt-1.5 text-red-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clipRule="evenodd" />
+                      </svg>
+                      <span className="text-xs font-medium">{errors.amount.message}</span>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loadingPayment}
+                  className={`group flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-rose-500 text-white hover:from-red-700 hover:to-rose-600 active:scale-[0.98] transition-all duration-200 py-3.5 px-4 rounded-xl w-full font-bold text-sm shadow-md shadow-red-100 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none`}
+                >
+                  {loadingPayment ? (
+                    <div className="flex items-center gap-2">
+                      <span className="loading loading-spinner loading-sm"></span>
+                      <span>Processing Payment...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <span>Proceed to Payment</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 transition-transform group-hover:translate-x-0.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                      </svg>
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {isWithdrawOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-bold text-gray-900">Withdraw Request</h3>
+                <button onClick={() => { setIsWithdrawOpen(false); reset(); }} className="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+              </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Mobile Number</label>
-                  <input
-                    type="text"
-                    placeholder="01XXXXXXXXX"
-                    {...register("phoneNumber", { required: "Mobile number is required" })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-xl outline-none focus:border-red-500 text-sm"
-                  />
-                  {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber.message}</p>}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Wallet Balance</label>
+                  <div className="w-full border border-gray-300 rounded-xl p-2.5 bg-gray-50 font-medium text-gray-900">
+                    Total Balance (৳{totalAmount})
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Transaction ID</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                  <select
+                    {...register('method')}
+                    className="w-full border border-gray-300 rounded-xl p-2.5 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="Bkash">Bkash</option>
+                    <option value="Nagad">Nagad</option>
+                    <option value="Rocket">Rocket</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
                   <input
                     type="text"
-                    placeholder="TxnID"
-                    {...register("transactionId", { required: "Transaction ID is required" })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-xl outline-none focus:border-red-500 text-sm"
+                    placeholder="01XXXXXXXXX"
+                    {...register('number', {
+                      required: 'Number is required',
+                      pattern: { value: /^(?:\+88|88)?(01[3-9]\d{8})$/, message: 'Invalid Bangladeshi number' }
+                    })}
+                    className="w-full border border-gray-300 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                  {errors.transactionId && <p className="text-red-500 text-xs mt-1">{errors.transactionId.message}</p>}
+                  {errors.number && <p className="text-red-500 text-xs mt-1">{errors.number.message}</p>}
                 </div>
+
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Amount</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
                   <input
                     type="number"
                     placeholder="Enter amount"
-                    {...register("amount", { required: "Amount is required" })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-xl outline-none focus:border-red-500 text-sm"
+                    {...register('amount', {
+                      required: 'Amount is required',
+                      min: { value: 500, message: 'Minimum withdraw amount is 500' },
+                      validate: {
+                        multipleOf500: value => parseFloat(value) % 500 === 0 || 'Amount must be a multiple of 500',
+                        insufficient: value => {
+                          const entered = parseFloat(value);
+                          const charge = entered * 0.03;
+                          return (totalAmount - (entered + charge)) >= 500 || 'Must keep 500 Tk maintained balance';
+                        }
+                      }
+                    })}
+                    className="w-full border border-gray-300 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount.message}</p>}
                 </div>
 
-                <div className="flex gap-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsRechargeOpen(false)}
-                    className="w-1/2 border border-gray-200 text-gray-600 py-2 rounded-xl text-sm font-medium hover:bg-gray-50"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="w-1/2 bg-red-600 text-white py-2 rounded-xl text-sm font-medium hover:bg-red-700"
-                  >
-                    Submit
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl transition duration-150"
+                >
+                  Submit Withdrawal
+                </button>
               </form>
             </div>
           </div>

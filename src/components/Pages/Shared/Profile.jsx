@@ -414,22 +414,33 @@ const Profile = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-5">
-                <div className="lg:col-span-2 space-y-6">
+            <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 pt-6 bg-slate-50/50 rounded-3xl">
+                <div className="xl:col-span-3 space-y-8">
 
-                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm border-l-red-600 border-l-4 relative group">
-                        <div className="flex justify-between items-center mb-4 border-b pb-2">
-                            <h2 className="text-lg font-bold text-red-600 flex items-center gap-2"><User className="w-5 h-5" /> Personal Information</h2>
+                    <div className="bg-white p-7 rounded-2xl border border-gray-200/80 shadow-sm relative group transition-all duration-300 hover:border-gray-300">
+                        <div className="flex justify-between items-center mb-6 pb-3 border-b border-gray-100">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                                    <User className="w-5 h-5" />
+                                </div>
+                                <h2 className="text-lg font-bold text-gray-800 tracking-tight">Personal Details</h2>
+                            </div>
                             {!editSections.personal && (
-                                <button type="button" onClick={() => toggleSection('personal', true)} className="p-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-full transition opacity-0 group-hover:opacity-100"><Edit2 className="w-4 h-4" /></button>
+                                <button
+                                    type="button"
+                                    onClick={() => toggleSection('personal', true)}
+                                    className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-1 border border-gray-200"
+                                >
+                                    <Edit2 className="w-3.5 h-3.5" /> Edit
+                                </button>
                             )}
                         </div>
 
                         {editSections.personal ? (
-                            <form onSubmit={handleSubmit((data) => onFormSubmit(data, 'personal'))} className="space-y-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <form onSubmit={handleSubmit((data) => onFormSubmit(data, 'personal'))} className="space-y-5">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                                     <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">AGE</label>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Date of Birth</label>
                                         <input
                                             required
                                             type="text"
@@ -437,47 +448,36 @@ const Profile = () => {
                                             maxLength={10}
                                             {...register("birth", {
                                                 required: "Date of birth is required",
-                                                validate: value => {
-                                                    const regex = /^\d{4}-\d{2}-\d{2}$/;
-                                                    return regex.test(value) || "Please enter a valid date (YYYY-MM-DD)";
-                                                }
+                                                validate: value => /^\d{4}-\d{2}-\d{2}$/.test(value) || "Please enter a valid date (YYYY-MM-DD)"
                                             })}
                                             onChange={(e) => {
                                                 let val = e.target.value.replace(/\D/g, "");
                                                 let formatted = "";
-
                                                 if (val.length > 0) {
                                                     formatted = val.substring(0, 4);
-
-                                                    if (val.length > 4) {
-                                                        formatted += "-" + val.substring(4, 6);
-                                                    }
-
-                                                    if (val.length > 6) {
-                                                        formatted += "-" + val.substring(6, 8);
-                                                    }
+                                                    if (val.length > 4) formatted += "-" + val.substring(4, 6);
+                                                    if (val.length > 6) formatted += "-" + val.substring(6, 8);
                                                 }
                                                 e.target.value = formatted;
                                                 const { onChange } = register("birth");
                                                 onChange(e);
                                             }}
-                                            className="w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:ring-4 focus:ring-[#C20E0E]/10 focus:border-[#C20E0E] outline-none transition-all duration-200 text-sm font-medium bg-gray-50/50 focus:bg-white text-gray-700"
-                                        />                                    </div>
-                                    <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">Height</label>
-                                        <input {...register('Height')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white" />
+                                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none transition-all text-sm font-medium text-gray-700 bg-gray-50/30"
+                                        />
                                     </div>
                                     <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">Home District</label>
-                                        <input {...register('currentDistrict')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white" />
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Height</label>
+                                        <input {...register('Height')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-sm bg-gray-50/30 text-gray-700" />
                                     </div>
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider block">
-                                            Marital Status
-                                        </label>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Home District</label>
+                                        <input {...register('currentDistrict')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-sm bg-gray-50/30 text-gray-700" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Marital Status</label>
                                         <select
                                             {...register('maritalStatus')}
-                                            className="w-full mt-1 p-2 border rounded-lg text-sm bg-white text-gray-700 outline-none cursor-pointer focus:border-[#C20E0E]"
+                                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-sm bg-gray-50/30 text-gray-700 cursor-pointer"
                                         >
                                             <option value="">Select Status</option>
                                             <option value="Unmarried">Unmarried</option>
@@ -486,400 +486,323 @@ const Profile = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">Religion</label>
-                                        <input {...register('religion')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white" />
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Religion</label>
+                                        <input {...register('religion')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 outline-none text-sm bg-gray-50/30 text-gray-700" />
                                     </div>
                                 </div>
-                                <div className="flex justify-end gap-2 pt-2">
-                                    <button type="button" onClick={() => toggleSection('personal', false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-xs font-medium">Cancel</button>
-                                    <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-medium">Save</button>
+                                <div className="flex justify-end gap-3 pt-3 border-t border-gray-100">
+                                    <button type="button" onClick={() => toggleSection('personal', false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-semibold transition">Cancel</button>
+                                    <button type="submit" className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition shadow-sm shadow-indigo-100">Save Changes</button>
                                 </div>
                             </form>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 bg-gray-50/50 p-5 rounded-xl border border-gray-100">
                                 <div>
-                                    <label className="text-xs font-semibold text-gray-400 uppercase">Age</label>
-                                    <p className="text-gray-800 font-medium mt-0.5">{profileUser?.age || 'Not Set'}</p>
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Age</span>
+                                    <p className="text-gray-800 font-semibold text-sm mt-1">{profileUser?.age || '—'}</p>
                                 </div>
                                 <div>
-                                    <label className="text-xs font-semibold text-gray-400 uppercase">Height</label>
-                                    <p className="text-gray-800 font-medium mt-0.5">{profileUser?.Height || 'Not Set'}</p>
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Height</span>
+                                    <p className="text-gray-800 font-semibold text-sm mt-1">{profileUser?.Height || '—'}</p>
                                 </div>
                                 <div>
-                                    <label className="text-xs font-semibold text-gray-400 uppercase">Home District</label>
-                                    <p className="text-gray-800 font-medium mt-0.5">{profileUser?.currentDistrict || 'Not Set'}</p>
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Home District</span>
+                                    <p className="text-gray-800 font-semibold text-sm mt-1">{profileUser?.currentDistrict || '—'}</p>
                                 </div>
                                 <div>
-                                    <label className="text-xs font-semibold text-gray-400 uppercase">Marital Status</label>
-                                    <p className="text-gray-800 font-medium mt-0.5">{profileUser?.maritalStatus || 'Not Set'}</p>
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Marital Status</span>
+                                    <p className="text-gray-800 font-semibold text-sm mt-1">{profileUser?.maritalStatus || '—'}</p>
                                 </div>
                                 <div>
-                                    <label className="text-xs font-semibold text-gray-400 uppercase">Religion</label>
-                                    <p className="text-gray-800 font-medium mt-0.5">{profileUser?.religion || 'Not Set'}</p>
+                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Religion</span>
+                                    <p className="text-gray-800 font-semibold text-sm mt-1">{profileUser?.religion || '—'}</p>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm border-l-red-600 border-l-4 relative group">
-                        <div className="flex justify-between items-center mb-4 border-b pb-2">
-                            <h2 className="text-lg font-bold text-red-600 flex items-center gap-2"><Briefcase className="w-5 h-5" /> Professional & Education</h2>
+
+                    <div className="bg-white p-7 rounded-2xl border border-gray-200/80 shadow-sm relative group transition-all duration-300 hover:border-gray-300">
+                        <div className="flex justify-between items-center mb-6 pb-3 border-b border-gray-100">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
+                                    <Briefcase className="w-5 h-5" />
+                                </div>
+                                <h2 className="text-lg font-bold text-gray-800 tracking-tight">Career & Education</h2>
+                            </div>
                             {!editSections.professional && (
-                                <button type="button" onClick={() => toggleSection('professional', true)} className="p-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-full transition opacity-0 group-hover:opacity-100"><Edit2 className="w-4 h-4" /></button>
+                                <button
+                                    type="button"
+                                    onClick={() => toggleSection('professional', true)}
+                                    className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-1 border border-gray-200"
+                                >
+                                    <Edit2 className="w-3.5 h-3.5" /> Edit
+                                </button>
                             )}
                         </div>
 
                         {editSections.professional ? (
-                            <form onSubmit={handleSubmit((data) => onFormSubmit(data, 'professional'))} className="space-y-4">
-                                <div className="space-y-3">
-                                    <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">Profession</label>
-                                        <input {...register('profession')} className="w-full mt-1 p-2 border rounded-lg text-sm mb-2 bg-white" placeholder="Profession" />
-                                        <input {...register('professionOrganization')} className="w-full p-2 border rounded-lg text-sm bg-white" placeholder="Organization" />
+                            <form onSubmit={handleSubmit((data) => onFormSubmit(data, 'professional'))} className="space-y-5">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="bg-gray-50/40 p-4 rounded-xl border border-gray-100 space-y-3">
+                                        <label className="block text-xs font-bold text-blue-600 uppercase tracking-wide">Work Status</label>
+                                        <input {...register('profession')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white" placeholder="Profession Title" />
+                                        <input {...register('professionOrganization')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white" placeholder="Company / Organization Name" />
                                     </div>
-                                    <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">Education</label>
-                                        <input {...register('education')} className="w-full mt-1 p-2 border rounded-lg text-sm mb-2 bg-white" placeholder="Education" />
-                                        <input {...register('institute')} className="w-full p-2 border rounded-lg text-sm bg-white" placeholder="Institution" />
+                                    <div className="bg-gray-50/40 p-4 rounded-xl border border-gray-100 space-y-3">
+                                        <label className="block text-xs font-bold text-blue-600 uppercase tracking-wide">Academic Qualification</label>
+                                        <input {...register('education')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white" placeholder="Degree / Course" />
+                                        <input {...register('institute')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white" placeholder="University / Institute" />
                                     </div>
                                 </div>
-                                <div className="flex justify-end gap-2 pt-2">
-                                    <button type="button" onClick={() => toggleSection('professional', false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-xs font-medium">Cancel</button>
-                                    <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-medium">Save</button>
+                                <div className="flex justify-end gap-3 pt-3 border-t border-gray-100">
+                                    <button type="button" onClick={() => toggleSection('professional', false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-semibold transition">Cancel</button>
+                                    <button type="submit" className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition shadow-sm shadow-blue-100">Save Changes</button>
                                 </div>
                             </form>
                         ) : (
-                            <div className="space-y-4">
-                                <div className="flex gap-3 items-start">
-                                    <div className="bg-red-50 p-2 rounded-xl text-red-600 mt-1"><Briefcase className="w-5 h-5" /></div>
-                                    <div className="flex-1">
-                                        <p className="text-gray-800 font-semibold">{profileUser?.profession || 'Not Set'}</p>
-                                        <p className="text-gray-500 text-sm">{profileUser?.professionOrganization || 'No Organization'}</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                                    <div className="p-3 bg-white text-gray-700 rounded-xl shadow-sm border border-gray-100"><Briefcase className="w-5 h-5 text-gray-500" /></div>
+                                    <div>
+                                        <span className="text-[10px] font-bold text-gray-400 uppercase block mb-0.5">Current Profession</span>
+                                        <p className="text-gray-800 font-bold text-sm">{profileUser?.profession || 'Not Set'}</p>
+                                        <p className="text-gray-500 text-xs mt-0.5">{profileUser?.professionOrganization || 'No Organization Info'}</p>
                                     </div>
                                 </div>
-                                <div className="flex gap-3 items-start">
-                                    <div className="bg-red-50 p-2 rounded-xl text-red-600 mt-1"><GraduationCap className="w-5 h-5" /></div>
-                                    <div className="flex-1">
-                                        <p className="text-gray-800 font-semibold">{profileUser?.education || 'Not Set'}</p>
-                                        <p className="text-gray-500 text-sm">{profileUser?.institute || 'No Institution'}</p>
+                                <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                                    <div className="p-3 bg-white text-gray-700 rounded-xl shadow-sm border border-gray-100"><GraduationCap className="w-5 h-5 text-gray-500" /></div>
+                                    <div>
+                                        <span className="text-[10px] font-bold text-gray-400 uppercase block mb-0.5">Education</span>
+                                        <p className="text-gray-800 font-bold text-sm">{profileUser?.education || 'Not Set'}</p>
+                                        <p className="text-gray-500 text-xs mt-0.5">{profileUser?.institute || 'No Institution Info'}</p>
                                     </div>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm border-l-red-600 border-l-4 relative group">
-                        <div className="flex justify-between items-center mb-4 border-b pb-2">
-                            <h2 className="text-lg font-bold text-red-600 flex items-center gap-2"><MapPin className="w-5 h-5" /> Contact & Address</h2>
+
+                    <div className="bg-white p-7 rounded-2xl border border-gray-200/80 shadow-sm relative group transition-all duration-300 hover:border-gray-300">
+                        <div className="flex justify-between items-center mb-6 pb-3 border-b border-gray-100">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
+                                    <MapPin className="w-5 h-5" />
+                                </div>
+                                <h2 className="text-lg font-bold text-gray-800 tracking-tight">Contact & Location</h2>
+                            </div>
                             {!editSections.contact && (
-                                <button type="button" onClick={handleContactEdit} className="p-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-full transition opacity-0 group-hover:opacity-100"><Edit2 className="w-4 h-4" /></button>
+                                <button
+                                    type="button"
+                                    onClick={handleContactEdit}
+                                    className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-1 border border-gray-200"
+                                >
+                                    <Edit2 className="w-3.5 h-3.5" /> Edit
+                                </button>
                             )}
                         </div>
 
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="border border-gray-100 p-4 rounded-xl bg-gray-50/50">
-                                    <span className="text-xs font-bold text-red-500 flex items-center gap-1 uppercase mb-1"><Phone className="w-3.5 h-3.5" /> Contact No</span>
-                                    <p className="text-gray-700 text-sm font-medium">{profileUser?.contactNo || 'Not Set'}</p>
+                        {!editSections.contact && (
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="p-4 bg-emerald-50/30 rounded-xl border border-emerald-100/50 flex items-center gap-3.5">
+                                        <div className="p-2 bg-white rounded-lg text-emerald-600 shadow-sm"><Phone className="w-4 h-4" /></div>
+                                        <div>
+                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Phone Number</span>
+                                            <p className="text-gray-700 text-sm font-semibold mt-0.5">{profileUser?.contactNo || '—'}</p>
+                                        </div>
+                                    </div>
+                                    <div className="p-4 bg-emerald-50/30 rounded-xl border border-emerald-100/50 flex items-center gap-3.5">
+                                        <div className="p-2 bg-white rounded-lg text-emerald-600 shadow-sm"><Mail className="w-4 h-4" /></div>
+                                        <div>
+                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Email Address</span>
+                                            <p className="text-gray-700 text-sm font-semibold mt-0.5 break-all">{profileUser?.email || '—'}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="border border-gray-100 p-4 rounded-xl bg-gray-50/50">
-                                    <span className="text-xs font-bold text-red-500 flex items-center gap-1 uppercase mb-1"><Mail className="w-3.5 h-3.5" /> Email Address</span>
-                                    <p className="text-gray-700 text-sm font-medium">{profileUser?.email || 'Not Set'}</p>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                                    <div className="space-y-1.5">
+                                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-gray-400" /> Current Address</span>
+                                        <p className="text-gray-700 text-sm font-medium pl-5 bg-gray-50 py-2.5 px-3 rounded-xl border border-gray-100">
+                                            {
+                                                (() => {
+                                                    const addressParts = [profileUser?.currentThana, profileUser?.currentDistrict, profileUser?.currentDivision, profileUser?.currentCountry].filter(Boolean);
+                                                    return addressParts.length > 0 ? addressParts.join(", ") : "No current address listed.";
+                                                })()
+                                            }
+                                        </p>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5"><Globe className="w-3.5 h-3.5 text-gray-400" /> Permanent Address</span>
+                                        <p className="text-gray-700 text-sm font-medium pl-5 bg-gray-50 py-2.5 px-3 rounded-xl border border-gray-100">
+                                            {
+                                                (() => {
+                                                    const addressParts = [profileUser?.permanentThana, profileUser?.permanentDistrict, profileUser?.permanentDivision, profileUser?.permanentCountry].filter(Boolean);
+                                                    return addressParts.length > 0 ? addressParts.join(", ") : "No permanent address listed.";
+                                                })()
+                                            }
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="border border-gray-100 p-4 rounded-xl bg-gray-50/50">
-                                    <span className="text-xs font-bold text-red-500 flex items-center gap-1 uppercase mb-1"><MapPin className="w-3.5 h-3.5" /> Current Address</span>
-                                    <p className="text-gray-700 text-sm font-medium">
-                                        {
-                                            (() => {
-                                                const addressParts = [
-                                                    profileUser?.currentThana,
-                                                    profileUser?.currentDistrict,
-                                                    profileUser?.currentDivision,
-                                                    profileUser?.currentCountry
-                                                ].filter(Boolean);
-
-                                                return addressParts.length > 0
-                                                    ? addressParts.join(", ")
-                                                    : "No set text";
-                                            })()
-                                        }
-                                    </p>
-                                </div>
-                                <div className="border border-gray-100 p-4 rounded-xl bg-gray-50/50">
-                                    <span className="text-xs font-bold text-red-500 flex items-center gap-1 uppercase mb-1"><Globe className="w-3.5 h-3.5" /> Permanent Address</span>
-                                    <p className="text-gray-700 text-sm font-medium">
-                                        {
-                                            (() => {
-                                                const addressParts = [
-                                                    profileUser?.permanentThana,
-                                                    profileUser?.permanentDistrict,
-                                                    profileUser?.permanentDivision,
-                                                    profileUser?.permanentCountry
-                                                ].filter(Boolean);
-
-                                                return addressParts.length > 0
-                                                    ? addressParts.join(", ")
-                                                    : "No set text";
-                                            })()
-                                        }
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        )}
 
                         {editSections.contact && (
-                            <form onSubmit={handleSubmit((data) => onFormSubmit(data, 'contact'))} className="space-y-4 mt-6 border-t pt-4">
+                            <form onSubmit={handleSubmit((data) => onFormSubmit(data, 'contact'))} className="space-y-6">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">Contact No</label>
-                                        <input {...register('contactNo')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white" />
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Contact No</label>
+                                        <input {...register('contactNo')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-gray-50/30" />
                                     </div>
                                     <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">Email</label>
-                                        <input {...register('email')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white" />
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Email</label>
+                                        <input {...register('email')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-gray-50/30" />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-4">
-                                    <div className="space-y-4">
-                                        <h3 className="text-sm font-bold text-gray-700">Current Address</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-gray-100 pt-5">
+                                    <div className="space-y-4 bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                        <h3 className="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Current Address Info</h3>
                                         <div>
-                                            <label className="text-xs font-semibold text-gray-400 uppercase">Division</label>
-                                            <select {...register('currentDivision')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white">
+                                            <label className="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Division</label>
+                                            <select {...register('currentDivision')} className="w-full p-2 border border-gray-200 rounded-lg text-sm bg-white">
                                                 <option value="">Select Division</option>
-                                                {divisions.map((div) => (
-                                                    <option key={div._id || div.id} value={div.id || div._id}>{div.name}</option>
-                                                ))}
+                                                {divisions.map((div) => <option key={div._id || div.id} value={div.id || div._id}>{div.name}</option>)}
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="text-xs font-semibold text-gray-400 uppercase">District</label>
-                                            <select disabled={!watchedCurrentDivision} {...register('currentDistrict')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white disabled:opacity-50">
+                                            <label className="block text-[11px] font-semibold text-gray-400 uppercase mb-1">District</label>
+                                            <select disabled={!watchedCurrentDivision} {...register('currentDistrict')} className="w-full p-2 border border-gray-200 rounded-lg text-sm bg-white disabled:opacity-50">
                                                 <option value="">Select District</option>
-                                                {currentDistricts.map((dist) => (
-                                                    <option key={dist._id || dist.id} value={dist.id || dist._id}>{dist.name}</option>
-                                                ))}
+                                                {currentDistricts.map((dist) => <option key={dist._id || dist.id} value={dist.id || dist._id}>{dist.name}</option>)}
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="text-xs font-semibold text-gray-400 uppercase">Thana / Upazila</label>
-                                            <select disabled={!watchedCurrentDistrict} {...register('currentThana')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white disabled:opacity-50">
+                                            <label className="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Thana / Upazila</label>
+                                            <select disabled={!watchedCurrentDistrict} {...register('currentThana')} className="w-full p-2 border border-gray-200 rounded-lg text-sm bg-white disabled:opacity-50">
                                                 <option value="">Select Thana</option>
-                                                {currentUpazilas.map((upz) => (
-                                                    <option key={upz._id || upz.id} value={upz.name}>{upz.name}</option>
-                                                ))}
+                                                {currentUpazilas.map((upz) => <option key={upz._id || upz.id} value={upz.name}>{upz.name}</option>)}
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="text-xs font-semibold text-gray-400 uppercase">Country</label>
-                                            <select {...register('currentCountry')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white">
+                                            <label className="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Country</label>
+                                            <select {...register('currentCountry')} className="w-full p-2 border border-gray-200 rounded-lg text-sm bg-white">
                                                 <option value="Bangladesh">Bangladesh</option>
                                             </select>
                                         </div>
                                     </div>
 
-                                    <div className="space-y-4">
-                                        <h3 className="text-sm font-bold text-gray-700">Permanent Address</h3>
+                                    <div className="space-y-4 bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                        <h3 className="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Permanent Address Info</h3>
                                         <div>
-                                            <label className="text-xs font-semibold text-gray-400 uppercase">Division</label>
-                                            <select {...register('permanentDivision')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white">
+                                            <label className="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Division</label>
+                                            <select {...register('permanentDivision')} className="w-full p-2 border border-gray-200 rounded-lg text-sm bg-white">
                                                 <option value="">Select Division</option>
-                                                {divisions.map((div) => (
-                                                    <option key={div._id || div.id} value={div.id || div._id}>{div.name}</option>
-                                                ))}
+                                                {divisions.map((div) => <option key={div._id || div.id} value={div.id || div._id}>{div.name}</option>)}
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="text-xs font-semibold text-gray-400 uppercase">District</label>
-                                            <select disabled={!watchedPermanentDivision} {...register('permanentDistrict')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white disabled:opacity-50">
+                                            <label className="block text-[11px] font-semibold text-gray-400 uppercase mb-1">District</label>
+                                            <select disabled={!watchedPermanentDivision} {...register('permanentDistrict')} className="w-full p-2 border border-gray-200 rounded-lg text-sm bg-white disabled:opacity-50">
                                                 <option value="">Select District</option>
-                                                {permanentDistricts.map((dist) => (
-                                                    <option key={dist._id || dist.id} value={dist.id || dist._id}>{dist.name}</option>
-                                                ))}
+                                                {permanentDistricts.map((dist) => <option key={dist._id || dist.id} value={dist.id || dist._id}>{dist.name}</option>)}
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="text-xs font-semibold text-gray-400 uppercase">Thana / Upazila</label>
-                                            <select disabled={!watchedPermanentDistrict} {...register('permanentThana')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white disabled:opacity-50">
+                                            <label className="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Thana / Upazila</label>
+                                            <select disabled={!watchedPermanentDistrict} {...register('permanentThana')} className="w-full p-2 border border-gray-200 rounded-lg text-sm bg-white disabled:opacity-50">
                                                 <option value="">Select Thana</option>
-                                                {permanentUpazilas.map((upz) => (
-                                                    <option key={upz._id || upz.id} value={upz.name}>{upz.name}</option>
-                                                ))}
+                                                {permanentUpazilas.map((upz) => <option key={upz._id || upz.id} value={upz.name}>{upz.name}</option>)}
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="text-xs font-semibold text-gray-400 uppercase">Country</label>
-                                            <select {...register('permanentCountry')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white">
+                                            <label className="block text-[11px] font-semibold text-gray-400 uppercase mb-1">Country</label>
+                                            <select {...register('permanentCountry')} className="w-full p-2 border border-gray-200 rounded-lg text-sm bg-white">
                                                 <option value="Bangladesh">Bangladesh</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end gap-2 pt-2">
-                                    <button type="button" onClick={() => toggleSection('contact', false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-xs font-medium">Cancel</button>
-                                    <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-medium">Save</button>
+                                <div className="flex justify-end gap-3 pt-3 border-t border-gray-100">
+                                    <button type="button" onClick={() => toggleSection('contact', false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-semibold transition">Cancel</button>
+                                    <button type="submit" className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold transition shadow-sm shadow-emerald-100">Save Changes</button>
                                 </div>
                             </form>
                         )}
                     </div>
 
-                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm border-l-red-600 border-l-4 relative group">
-                        <div className="flex justify-between items-center mb-4 border-b pb-2">
-                            <h2 className="text-lg font-bold text-red-600 flex items-center gap-2"><Home className="w-5 h-5" /> Family Background</h2>
+
+                    <div className="bg-white p-7 rounded-2xl border border-gray-200/80 shadow-sm relative group transition-all duration-300 hover:border-gray-300">
+                        <div className="flex justify-between items-center mb-6 pb-3 border-b border-gray-100">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
+                                    <Home className="w-5 h-5" />
+                                </div>
+                                <h2 className="text-lg font-bold text-gray-800 tracking-tight">Family Details</h2>
+                            </div>
                             {!editSections.family && (
-                                <button type="button" onClick={() => toggleSection('family', true)} className="p-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-full transition opacity-0 group-hover:opacity-100"><Edit2 className="w-4 h-4" /></button>
+                                <button
+                                    type="button"
+                                    onClick={() => toggleSection('family', true)}
+                                    className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-1 border border-gray-200"
+                                >
+                                    <Edit2 className="w-3.5 h-3.5" /> Edit
+                                </button>
                             )}
                         </div>
 
                         {editSections.family ? (
-                            <form onSubmit={handleSubmit((data) => onFormSubmit(data, 'family'))} className="space-y-4">
+                            <form onSubmit={handleSubmit((data) => onFormSubmit(data, 'family'))} className="space-y-5">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">Father's Occupation</label>
-                                        <input {...register('fatherOccupation')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white" />
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Father's Occupation</label>
+                                        <input {...register('fatherOccupation')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-gray-50/30 text-gray-700" />
                                     </div>
                                     <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">Mother's Occupation</label>
-                                        <input {...register('motherOccupation')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white" />
+                                        <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Mother's Occupation</label>
+                                        <input {...register('motherOccupation')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-gray-50/30 text-gray-700" />
                                     </div>
-                                    {/* <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">Siblings</label>
-                                        <input {...register('siblings')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white" />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-semibold text-gray-400 uppercase">Family Values</label>
-                                        <input {...register('familyValues')} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white" />
-                                    </div> */}
                                 </div>
-                                <div className="flex justify-end gap-2 pt-2">
-                                    <button type="button" onClick={() => toggleSection('family', false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-xs font-medium">Cancel</button>
-                                    <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-medium">Save</button>
+                                <div className="flex justify-end gap-3 pt-3 border-t border-gray-100">
+                                    <button type="button" onClick={() => toggleSection('family', false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-semibold transition">Cancel</button>
+                                    <button type="submit" className="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold transition shadow-sm shadow-amber-100">Save Changes</button>
                                 </div>
                             </form>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="text-xs font-semibold text-gray-400 uppercase">Father's Occupation</label>
-                                    <p className="text-gray-800 font-medium mt-0.5">{profileUser?.fatherOccupation || 'Not Set'}</p>
+                                <div className="p-4 bg-amber-50/20 border border-amber-100/70 rounded-xl">
+                                    <span className="text-[10px] font-bold text-amber-700/70 uppercase tracking-wider block">Father's Profession</span>
+                                    <p className="text-gray-800 font-bold text-sm mt-1">{profileUser?.fatherOccupation || '—'}</p>
                                 </div>
-                                <div>
-                                    <label className="text-xs font-semibold text-gray-400 uppercase">Mother's Occupation</label>
-                                    <p className="text-gray-800 font-medium mt-0.5">{profileUser?.motherOccupation || 'Not Set'}</p>
+                                <div className="p-4 bg-amber-50/20 border border-amber-100/70 rounded-xl">
+                                    <span className="text-[10px] font-bold text-amber-700/70 uppercase tracking-wider block">Mother's Profession</span>
+                                    <p className="text-gray-800 font-bold text-sm mt-1">{profileUser?.motherOccupation || '—'}</p>
                                 </div>
-                                {/* <div>
-                                    <label className="text-xs font-semibold text-gray-400 uppercase">Siblings</label>
-                                    <p className="text-gray-800 font-medium mt-0.5">{profileUser?.siblings || 'Not Set'}</p>
-                                </div>
-                                <div>
-                                    <label className="text-xs font-semibold text-gray-400 uppercase">Family Values</label>
-                                    <p className="text-gray-800 font-medium mt-0.5">{profileUser?.familyValues || 'Not Set'}</p>
-                                </div> */}
                             </div>
                         )}
                     </div>
-
-                    {/* <div className="bg-red-600 text-white p-6 rounded-2xl shadow-sm relative group">
-                        <div className="flex justify-between items-center mb-4 border-b border-white/20 pb-2">
-                            <h2 className="text-lg font-bold flex items-center gap-2"><Heart className="w-5 h-5" /> Partner Expectations</h2>
-                            {!editSections.expectations && (
-                                <button type="button" onClick={() => toggleSection('expectations', true)} className="p-1.5 bg-white/20 hover:bg-white/30 text-white rounded-full transition opacity-0 group-hover:opacity-100"><Edit2 className="w-4 h-4" /></button>
-                            )}
-                        </div>
-
-                        {editSections.expectations ? (
-                            <form onSubmit={handleSubmit((data) => onFormSubmit(data, 'expectations'))} className="space-y-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {[1, 2, 3, 4].map((num) => (
-                                        <div key={num} className="w-full">
-                                            <label className="text-xs font-semibold opacity-80 uppercase">Expectation {num}</label>
-                                            <textarea {...register(`expectation${num}`)} className="w-full mt-1 p-2 border rounded-lg text-sm bg-white text-gray-800" rows={2} />
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex justify-end gap-2 pt-2">
-                                    <button type="button" onClick={() => toggleSection('expectations', false)} className="px-4 py-2 bg-white/20 text-white rounded-xl text-xs font-medium">Cancel</button>
-                                    <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-medium">Save</button>
-                                </div>
-                            </form>
-                        ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {[1, 2, 3, 4].map((num) => (
-                                    <div key={num} className="flex gap-2 items-start">
-                                        <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 text-white/80" />
-                                        <p className="text-sm font-medium leading-relaxed">{profileUser?.[`expectation${num}`] || 'No expectations added yet.'}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div> */}
-
                 </div>
 
-                <div className="space-y-6">
-                    {/* <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
-                        <div className="mx-auto bg-red-50 text-red-600 w-12 h-12 rounded-full flex items-center justify-center mb-3"><Heart className="w-6 h-6" /></div>
-                        <h3 className="font-bold text-gray-800 text-lg">Connect with {profileUser?.name || 'User'}</h3>
-                        <p className="text-gray-500 text-sm mt-1 mb-4 px-4">Take the first step toward a blessed journey together.</p>
-
-                        <button type="button" className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold text-sm transition shadow-md shadow-red-100 mb-3 flex items-center justify-center gap-2">
-                            <Heart className="w-4 h-4" /> Send Interest
-                        </button>
-
-                        {isProfileLocked ? (
-                            <button type="button" onClick={handleUnlockProfile} className="w-full border border-red-200 hover:bg-red-50 text-red-600 py-3 rounded-xl font-semibold text-sm transition flex items-center justify-center gap-2">
-                                <Lock className="w-4 h-4" /> Unlock Contact Details
-                            </button>
-                        ) : (
-                            <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl space-y-2 text-left">
-                                <p className="text-xs font-bold flex items-center gap-1 text-emerald-600 uppercase"><Unlock className="w-3.5 h-3.5" /> Contact Unlocked</p>
-                                <p className="text-sm"><strong>Phone:</strong> {profileUser?.phone || 'N/A'}</p>
-                                <p className="text-sm"><strong>Email:</strong> {profileUser?.email || 'N/A'}</p>
-                            </div>
-                        )}
-                    </div> */}
-
-                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Verification Status</h3>
+                <div className="xl:col-span-1 space-y-6">
+                    <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl text-white">
+                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-700 pb-2">Verification Desk</h3>
                         <div className="space-y-3">
-                            <div className="flex items-center gap-2.5 text-sm font-medium text-gray-700">
+                            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/60 border border-slate-700/50">
+                                <span className="text-xs font-medium text-slate-300">Profile Activation</span>
                                 {profileUser?.isActive === 'ACTIVE' ? (
-                                    <CheckCircle2 className="w-4 h-4 text-emerald-600 fill-emerald-50" />
+                                    <div className="flex items-center gap-1.5 text-xs bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/20 font-bold">
+                                        <CheckCircle2 className="w-3.5 h-3.5 fill-emerald-500/10" /> ACTIVE
+                                    </div>
                                 ) : (
-                                    <X className="w-4 h-4 text-red-500" />
+                                    <div className="flex items-center gap-1.5 text-xs bg-rose-500/10 text-rose-400 px-2.5 py-1 rounded-full border border-rose-500/20 font-bold">
+                                        <X className="w-3.5 h-3.5" /> INACTIVE
+                                    </div>
                                 )}
-                                <span>Profile Activation</span>
                             </div>
-                            {/* <div className="flex items-center gap-2.5 text-sm font-medium text-gray-700">
-                                {nidUploaded ? <CheckCircle2 className="w-4 h-4 text-emerald-600 fill-emerald-50" /> : <X className="w-4 h-4 text-gray-300" />}
-                                <span>Official ID Document Verified</span>
-                            </div> */}
                         </div>
                     </div>
-
-                    {/* <div className="bg-gradient-to-br from-emerald-900 to-teal-950 text-white p-6 rounded-2xl shadow-sm relative overflow-hidden">
-                        <h3 className="font-bold text-lg mb-1">Verify Your Identity</h3>
-                        <p className="text-xs text-emerald-200/80 mb-4 leading-relaxed">Attach your National ID Card (NID) to unlock verified badge.</p>
-                        {!nidUploaded ? (
-                            <div className="border border-dashed border-emerald-500/50 rounded-xl p-4 bg-emerald-950/40 text-center hover:bg-emerald-950/60 transition cursor-pointer relative">
-                                <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleNidUpload} />
-                                <Upload className="w-5 h-5 mx-auto text-emerald-400 mb-1" />
-                                <p className="text-xs font-medium text-emerald-300">Upload NID Front & Back</p>
-                            </div>
-                        ) : (
-                            <div className="bg-emerald-800/40 border border-emerald-500/30 p-3 rounded-xl flex items-center justify-between">
-                                <span className="text-xs font-medium text-emerald-200">
-                                    {profileUser?.nidStatus === 'verified' ? 'NID Verified Successfully' : 'NID Uploaded (Pending Review)'}
-                                </span>
-                                {profileUser?.nidStatus !== 'verified' && (
-                                    <button type="button" onClick={() => setNidUploaded(false)} className="text-emerald-400 hover:text-emerald-200"><X className="w-4 h-4" /></button>
-                                )}
-                            </div>
-                        )}
-                    </div> */}
                 </div>
             </div>
         </div>

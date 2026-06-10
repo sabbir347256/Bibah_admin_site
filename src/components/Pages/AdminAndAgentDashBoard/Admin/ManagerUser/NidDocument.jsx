@@ -1,17 +1,19 @@
-import { Check, ExternalLink, Eye, Trash2, X } from "lucide-react";
+import { ExternalLink, Eye, Trash2, X } from "lucide-react";
 import config from "../../../utilies/envCongig";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useCustomQuery } from "../../../utilies/useCustomQuery";
 import { AuthProvider } from "../../../../AuthProvider/CreateContext";
 import DynamicHeader from "../../../DynamicComponent/DynamicHeader";
+import { useApiHeader } from "../../../utilies/token";
 
 const NidDocument = () => {
     const { token } = useContext(AuthProvider);
     // const [submissions, setSubmissions] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
+     const apiHeader = useApiHeader();
 
 
     const { data: datasubmissions, isLoading, refetch } = useCustomQuery({
@@ -50,11 +52,10 @@ const NidDocument = () => {
     const handleUpdateStatus = async (id, status) => {
         const toastId = toast.loading(`Updating status to ${status}...`);
         try {
-            const token = localStorage.getItem("token");
             const res = await axios.patch(
-                `${config?.backendUrl}/user/admin/nid-status/${id}`,
+                `${config?.backendUrl}/verification/nid-status/${id}`,
                 { status },
-                { headers: { Authorization: `Bearer ${token}` } }
+                apiHeader
             );
             if (res.data?.success) {
                 toast.success(res.data.message, { id: toastId });
@@ -70,10 +71,7 @@ const NidDocument = () => {
         if (!window.confirm("Are you sure you want to delete this submission?")) return;
         const toastId = toast.loading("Deleting submission...");
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.delete(`${config?.backendUrl}/user/admin/nid-delete/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const res = await axios.delete(`${config?.backendUrl}/verification/nid-delete/${id}`, apiHeader);
             if (res.data?.success) {
                 toast.success(res.data.message, { id: toastId });
                 refetch();
@@ -89,6 +87,8 @@ const NidDocument = () => {
     }
     return (
         <div>
+            <Toaster position="top-right" reverseOrder={false} />
+
             <div className="flex justify-between md:items-center flex-col md:flex-row">
                 <DynamicHeader
                     mainHeader={"NID Identity Verification Panel"}
@@ -96,7 +96,7 @@ const NidDocument = () => {
                 />
             </div>
             <div className="bg-[#fffbfb] min-h-screen mt-4 overflow-x-auto w-full px-6">
-                
+
 
                 <table className="min-w-full divide-y divide-gray-200 border">
                     <thead className="bg-gray-50">
@@ -115,8 +115,8 @@ const NidDocument = () => {
                         {submissions.map((user, index) => (
                             <tr key={user._id}>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{index + 1}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.userId?._id || "N/A"}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.userId?.name || "N/A"}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.userId?.userID || "N/A"}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.userId?.fullName || "N/A"}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.userId?.email || "N/A"}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.userId?.contactNo || "N/A"}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -136,10 +136,10 @@ const NidDocument = () => {
                                         value={user.status || "pending"}
                                         onChange={(e) => handleUpdateStatus(user._id, e.target.value)}
                                         className={`px-2 py-1 rounded border text-xs font-semibold uppercase outline-none bg-white ${user.status === "verified"
-                                                ? "text-emerald-800 border-emerald-300"
-                                                : user.status === "rejected"
-                                                    ? "text-rose-800 border-rose-300"
-                                                    : "text-amber-800 border-amber-300"
+                                            ? "text-emerald-800 border-emerald-300"
+                                            : user.status === "rejected"
+                                                ? "text-rose-800 border-rose-300"
+                                                : "text-amber-800 border-amber-300"
                                             }`}
                                     >
                                         <option value="pending">Pending</option>

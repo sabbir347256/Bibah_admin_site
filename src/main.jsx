@@ -15,6 +15,7 @@ import CreateAgent from "./components/Pages/AdminAndAgentDashBoard/Admin/CreateA
 import Profile from "./components/Pages/Shared/Profile";
 import VerificationInformationAdd from "./components/Pages/AdminAndAgentDashBoard/Agent/verificationInformation/VerificationInformationAdd";
 import NidDocument from "./components/Pages/AdminAndAgentDashBoard/Admin/ManagerUser/NidDocument";
+import Dashboard from "./components/Pages/AdminAndAgentDashBoard/Admin/DashBoardLayout/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,11 @@ const router = createBrowserRouter([
         path: '/',
         element: <AdminPrivateRoute><Layout></Layout></AdminPrivateRoute>,
         children: [
+          {
+            path: '/',
+            element: <Dashboard></Dashboard>
+          }
+          ,
           {
             path: '/all-users',
             element: <AllUser></AllUser>
