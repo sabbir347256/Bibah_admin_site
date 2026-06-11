@@ -16,6 +16,8 @@ import Profile from "./components/Pages/Shared/Profile";
 import VerificationInformationAdd from "./components/Pages/AdminAndAgentDashBoard/Agent/verificationInformation/VerificationInformationAdd";
 import NidDocument from "./components/Pages/AdminAndAgentDashBoard/Admin/ManagerUser/NidDocument";
 import Dashboard from "./components/Pages/AdminAndAgentDashBoard/Admin/DashBoardLayout/Dashboard";
+import Allwithdraw from "./components/Pages/AdminAndAgentDashBoard/Agent/withdraw/Allwithdraw";
+import AgentPrivateRoute from "./components/Pages/PrivateRoute/AgentPrivateRoute";
 
 const queryClient = new QueryClient();
 
@@ -25,52 +27,60 @@ const router = createBrowserRouter([
     element: <Root></Root>,
     children: [
       {
-        path: '/',
-        element: <AdminPrivateRoute><Layout></Layout></AdminPrivateRoute>,
+        path: "/",
+        element: <Layout></Layout>, 
         children: [
+
           {
-            path: '/',
-            element: <Dashboard></Dashboard>
-          }
-          ,
+            element: <AdminPrivateRoute />,
+            children: [
+              {
+                path: '/',
+                element: <Dashboard></Dashboard>
+              },
+              {
+                path: '/all-users',
+                element: <AllUser></AllUser>
+              },
+              {
+                path: '/all-transaction',
+                element: <AllTransaction></AllTransaction>
+              },
+              {
+                path: '/agent-registration',
+                element: <CreateAgent></CreateAgent>
+              },
+              {
+                path: '/profile',
+                element: <Profile></Profile>
+              },
+              {
+                path: '/field-verification',
+                element: <VerificationInformationAdd></VerificationInformationAdd>
+              },
+              {
+                path: '/all-document',
+                element: <NidDocument></NidDocument>
+              }
+            ]
+          },
           {
-            path: '/all-users',
-            element: <AllUser></AllUser>
+            element: <AgentPrivateRoute />,
+            children: [
+              {
+                path: '/all-withdraw',
+                element: <Allwithdraw></Allwithdraw>
+              }
+            ]
           }
-          ,
-          {
-            path: '/all-transaction',
-            element: <AllTransaction></AllTransaction>
-          }
-          ,
-          {
-            path: '/agent-registration',
-            element: <CreateAgent></CreateAgent>
-          }
-          ,
-          {
-            path: '/profile',
-            element: <Profile></Profile>
-          }
-          ,
-          {
-            path: '/field-verification',
-            element: <VerificationInformationAdd></VerificationInformationAdd>
-          }
-          ,
-          {
-            path: '/all-document',
-            element: <NidDocument></NidDocument>
-          }
-          ,
+
         ]
       }
-
     ]
   },
   {
-    path : "/admin-login",
-    element : <Login></Login>
+    path: "/admin-login",
+    element: <Login></Login>
   }
 ]);
 

@@ -1,6 +1,6 @@
 import { Trash2 } from "lucide-react";
 import DynamicHeader from "../../../DynamicComponent/DynamicHeader";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {  useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import config from "../../../utilies/envCongig";

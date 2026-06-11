@@ -24,7 +24,7 @@ const Layout = () => {
   const { user, data } = useContext(AuthProvider);
   const [isOpen, setIsOpen] = useState(false);
   const [isWalletOpen, setIsWalletOpen] = useState(false);
-  const [isRechargeOpen, setIsRechargeOpen] = useState(false);
+  // const [isRechargeOpen, setIsRechargeOpen] = useState(false);
 
   const walletRef = useRef(null);
   const mobileWalletRef = useRef(null);
@@ -73,13 +73,22 @@ const Layout = () => {
       }
     ] : []),
     {
-      section: "USER MANAGE",
+      section: (user?.role === "ADMIN" ? "USER MANAGE" : "AGENT PANEL"),
       items: [
-        {
-          path: "/all-users",
-          label: "All Users",
-          icon: Users2,
-        },
+        ...(user?.role === "AGENT" ? [
+          {
+            path: "/all-withdraw",
+            label: "Withdraw List",
+            icon: DollarSign,
+          }
+        ] : []),
+        ...(user?.role === "ADMIN" ? [
+          {
+            path: "/all-users",
+            label: "All Users",
+            icon: Users2,
+          }
+        ] : []),
         ...(user?.role === "ADMIN" ? [
           { path: "/all-transaction", label: "All Transaction", icon: DollarSign }
         ] : []),
@@ -196,47 +205,47 @@ const Layout = () => {
   // };
 
 
-  const [loadingPayment, setLoadingPayment] = useState(false);
+  // const [loadingPayment, setLoadingPayment] = useState(false);
 
-  const onRechargeSubmit = async (formData) => {
-    setLoadingPayment(true);
-    const token = localStorage.getItem("accessToken");
+  // const onRechargeSubmit = async (formData) => {
+  //   setLoadingPayment(true);
+  //   const token = localStorage.getItem("accessToken");
 
-    try {
-      const paymentPayload = {
-        userObjectId: user?.userId,
-        userId: user?.userProfileId,
-        amount: formData.amount,
-        name: user?.name,
-        email: user?.email,
-        phone: user?.phone,
-        originUrl: window.location.origin
-      };
+  //   try {
+  //     const paymentPayload = {
+  //       userObjectId: user?.userId,
+  //       userId: user?.userProfileId,
+  //       amount: formData.amount,
+  //       name: user?.name,
+  //       email: user?.email,
+  //       phone: user?.phone,
+  //       originUrl: window.location.origin
+  //     };
 
-      const response = await axios.post(
-        `${config?.backendUrl}/transaction/initiate-paystation`,
-        paymentPayload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  //     const response = await axios.post(
+  //       `${config?.backendUrl}/transaction/initiate-paystation`,
+  //       paymentPayload,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
 
-      if (response.data.success && response.data.payment_url) {
-        toast.success("Redirecting to PayStation...");
-        window.location.assign(response.data.payment_url);
-      } else {
-        toast.error("Could not initiate payment");
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Payment initialization failed");
-    } finally {
-      setLoadingPayment(false);
-      setIsRechargeOpen(false);
-      reset();
-    }
-  };
+  //     if (response.data.success && response.data.payment_url) {
+  //       toast.success("Redirecting to PayStation...");
+  //       window.location.assign(response.data.payment_url);
+  //     } else {
+  //       toast.error("Could not initiate payment");
+  //     }
+  //   } catch (error) {
+  //     toast.error(error?.response?.data?.message || "Payment initialization failed");
+  //   } finally {
+  //     setLoadingPayment(false);
+  //     setIsRechargeOpen(false);
+  //     reset();
+  //   }
+  // };
 
 
 
@@ -255,13 +264,8 @@ const Layout = () => {
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
 
 
-  const mainAmount = data?.data?.mainWalletBalance || 0;
-  const referralAmount = data?.data?.agentReferWalletPoints || 0;
   const totalamount = data?.data?.totalAmount || 0;
 
-  const totalAmount = user
-    ? (mainAmount || 0) + (referralAmount || 0)
-    : 0;
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
@@ -419,15 +423,15 @@ const Layout = () => {
                       <span className="font-semibold text-indigo-600">৳ {totalamount}</span>
                     </div> */}
                   </div>
-                  <button
+                  {/* <button
                     onClick={() => setIsRechargeOpen(true)}
                     className="bg-red-600 text-white hover:bg-red-800 duration-100 p-2 rounded-xl w-full mt-2"
                   >
                     Recharge
-                  </button>
+                  </button> */}
                   <button
                     onClick={() => setIsWithdrawOpen(true)}
-                    className="bg-indigo-600 text-white hover:bg-indigo-800 duration-100 p-2 rounded-xl w-full mt-2 text-sm font-medium"
+                    className="bg-red-600 text-white hover:bg-red-800 duration-100 p-2 rounded-xl w-full mt-2 text-sm font-medium"
                   >
                     Withdraw
                   </button>
@@ -486,7 +490,7 @@ const Layout = () => {
         </header>
 
 
-        {isRechargeOpen && (
+        {/* {isRechargeOpen && (
           <div className="modal modal-open fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-all duration-300">
             <div className="modal-box bg-white max-w-sm w-full rounded-2xl p-6 relative border border-gray-100 shadow-2xl transform transition-all scale-100 animate-in fade-in zoom-in-95 duration-200">
               <button
@@ -555,7 +559,7 @@ const Layout = () => {
               </form>
             </div>
           </div>
-        )}
+        )} */}
 
         {isWithdrawOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -569,7 +573,7 @@ const Layout = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Wallet Balance</label>
                   <div className="w-full border border-gray-300 rounded-xl p-2.5 bg-gray-50 font-medium text-gray-900">
-                    Total Balance (৳{totalAmount})
+                    Total Balance (৳{totalamount})
                   </div>
                 </div>
 
@@ -612,7 +616,7 @@ const Layout = () => {
                         insufficient: value => {
                           const entered = parseFloat(value);
                           const charge = entered * 0.03;
-                          return (totalAmount - (entered + charge)) >= 500 || 'Must keep 500 Tk maintained balance';
+                          return (totalamount - (entered + charge)) >= 500 || 'Must keep 500 Tk maintained balance';
                         }
                       }
                     })}

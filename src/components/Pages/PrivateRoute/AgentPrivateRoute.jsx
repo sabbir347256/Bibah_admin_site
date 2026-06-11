@@ -1,9 +1,9 @@
-import { useContext } from 'react';
-import { AuthProvider } from '../../AuthProvider/CreateContext';
-import { Loader2 } from 'lucide-react';
-import { Navigate, Outlet, useLocation } from 'react-router';
+import { useContext } from "react";
+import { AuthProvider } from "../../AuthProvider/CreateContext";
+import { Navigate, Outlet, useLocation } from "react-router";
+import { Loader2 } from "lucide-react";
 
-const AdminPrivateRoute = () => {
+const AgentPrivateRoute = () => {
     const { user, loading } = useContext(AuthProvider);
     const location = useLocation();
 
@@ -15,11 +15,11 @@ const AdminPrivateRoute = () => {
         );
     }
 
-    if (user && (user.role === 'ADMIN' ) ) {
+    if (user && (user.role === 'AGENT')) {
         return <Outlet></Outlet>;
     }
 
     return <Navigate to="/" state={{ from: location }} replace />;
 };
 
-export default AdminPrivateRoute;
+export default AgentPrivateRoute;

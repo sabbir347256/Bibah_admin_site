@@ -1,4 +1,4 @@
-import { Briefcase, Camera, CheckCircle2, Edit2, Globe, GraduationCap, Heart, Home, Mail, MapPin, Phone, ShieldCheck, User, X } from "lucide-react";
+import { Briefcase, Camera, CheckCircle2, Edit2, Globe, GraduationCap, Mail, MapPin, Phone, ShieldCheck, User, X } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import config from "../utilies/envCongig";
@@ -18,7 +18,7 @@ const Profile = () => {
     console.log(profileUser)
 
     const [loading, setLoading] = useState(true);
-    const [isProfileLocked, setIsProfileLocked] = useState(true);
+    // const [isProfileLocked, setIsProfileLocked] = useState(true);
     const [editSections, setEditSections] = useState({
         header: false,
         personal: false,
@@ -33,10 +33,9 @@ const Profile = () => {
         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400"
     });
 
-    const [nidUploaded, setNidUploaded] = useState(false);
+    // const [nidUploaded, setNidUploaded] = useState(false);
 
     const { register, handleSubmit, watch, reset, setValue } = useForm();
-    const watchedValues = watch();
 
 
 
@@ -47,8 +46,8 @@ const Profile = () => {
                 if (profileUser) {
                     if (profileUser.coverImage) setImages(prev => ({ ...prev, cover: profileUser.coverImage }));
                     if (profileUser.profileImage) setImages(prev => ({ ...prev, avatar: profileUser.profileImage }));
-                    if (profileUser.nidStatus) setNidUploaded(profileUser.nidStatus === 'verified' || profileUser.nidStatus === 'pending');
-                    setIsProfileLocked(profileUser.isLocked !== undefined ? profileUser.isLocked : true);
+                    // if (profileUser.nidStatus) setNidUploaded(profileUser.nidStatus === 'verified' || profileUser.nidStatus === 'pending');
+                    // setIsProfileLocked(profileUser.isLocked !== undefined ? profileUser.isLocked : true);
                 }
                 setLoading(false);
             } catch (error) {
@@ -118,23 +117,23 @@ const Profile = () => {
         }
     };
 
-    const handleNidUpload = async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setNidUploaded(true);
-            const formData = new FormData();
-            formData.append('nidDocument', file);
+    // const handleNidUpload = async (e) => {
+    //     const file = e.target.files[0];
+    //     if (file) {
+    //         setNidUploaded(true);
+    //         const formData = new FormData();
+    //         formData.append('nidDocument', file);
 
-            try {
-                await axios.post(`${config?.backendUrl}/user/upload-nid`, formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
-            } catch (error) {
-                console.error("Error uploading NID:", error);
-                setNidUploaded(false);
-            }
-        }
-    };
+    //         try {
+    //             await axios.post(`${config?.backendUrl}/user/upload-nid`, formData, {
+    //                 headers: { 'Content-Type': 'multipart/form-data' }
+    //             });
+    //         } catch (error) {
+    //             console.error("Error uploading NID:", error);
+    //             setNidUploaded(false);
+    //         }
+    //     }
+    // };
 
 
 
@@ -734,7 +733,7 @@ const Profile = () => {
                     </div>
 
 
-                    <div className="bg-white p-7 rounded-2xl border border-gray-200/80 shadow-sm relative group transition-all duration-300 hover:border-gray-300">
+                    {/* <div className="bg-white p-7 rounded-2xl border border-gray-200/80 shadow-sm relative group transition-all duration-300 hover:border-gray-300">
                         <div className="flex justify-between items-center mb-6 pb-3 border-b border-gray-100">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
@@ -782,7 +781,7 @@ const Profile = () => {
                                 </div>
                             </div>
                         )}
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="xl:col-span-1 space-y-6">
