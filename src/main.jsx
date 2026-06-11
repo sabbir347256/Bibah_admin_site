@@ -28,7 +28,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Layout></Layout>, 
+        element: <Layout></Layout>,
         children: [
 
           {
@@ -51,10 +51,6 @@ const router = createBrowserRouter([
                 element: <CreateAgent></CreateAgent>
               },
               {
-                path: '/profile',
-                element: <Profile></Profile>
-              },
-              {
                 path: '/field-verification',
                 element: <VerificationInformationAdd></VerificationInformationAdd>
               },
@@ -72,7 +68,11 @@ const router = createBrowserRouter([
                 element: <Allwithdraw></Allwithdraw>
               }
             ]
-          }
+          },
+          {
+            path: '/profile',
+            element: <Profile></Profile>
+          },
 
         ]
       }
