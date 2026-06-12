@@ -99,6 +99,23 @@ const Layout = () => {
     },
     ...(user?.role === "ADMIN" ? [
       {
+        section: "Transaction Section",
+        items: [
+          {
+            path: "/all-document-transaction",
+            label: "Document Transaction",
+            icon: DollarSign,
+          },
+          // {
+          //   path: "/field-verification",
+          //   label: "Add Field Verification",
+          //   icon: VerifiedIcon,
+          // },
+        ],
+      }
+    ] : []),
+    ...(user?.role === "ADMIN" ? [
+      {
         section: "Agent Function",
         items: [
           {

@@ -9,5 +9,6 @@ export const useCustomQuery = ({ url, headers, queryKey }) => {
       const response = await axios.get(url, config);
       return response.data;
     },
+    placeholderData: (previousData) => previousData,
   });
 };
