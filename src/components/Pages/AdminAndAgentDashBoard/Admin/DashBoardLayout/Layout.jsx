@@ -106,11 +106,11 @@ const Layout = () => {
             label: "Document Transaction",
             icon: DollarSign,
           },
-          // {
-          //   path: "/field-verification",
-          //   label: "Add Field Verification",
-          //   icon: VerifiedIcon,
-          // },
+          {
+            path: "/field-transaction",
+            label: "Field Transaction",
+            icon: DollarSign,
+          },
         ],
       }
     ] : []),

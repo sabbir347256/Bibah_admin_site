@@ -19,6 +19,7 @@ import Dashboard from "./components/Pages/AdminAndAgentDashBoard/Admin/DashBoard
 import Allwithdraw from "./components/Pages/AdminAndAgentDashBoard/Agent/withdraw/Allwithdraw";
 import AgentPrivateRoute from "./components/Pages/PrivateRoute/AgentPrivateRoute";
 import NidTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/NidTransaction/NidTransaction";
+import FieldTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/FieldTransaction/FieldTransaction";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
                 path: '/all-document-transaction',
                 element: <NidTransaction></NidTransaction>
               },
+              {
+                path : "/field-transaction",
+                element : <FieldTransaction></FieldTransaction>
+              }
             ]
           },
           {

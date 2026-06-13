@@ -1,15 +1,15 @@
 import { ChevronLeft, ChevronRight, Loader2, Trash2 } from "lucide-react";
 import SearchInput from "../../../utilies/SearchInput";
 import DynamicHeader from "../../../DynamicComponent/DynamicHeader";
-import { useContext, useState } from "react";
-import { AuthProvider } from "../../../../AuthProvider/CreateContext";
-import config from "../../../utilies/envCongig";
-import { useCustomQuery } from "../../../utilies/useCustomQuery";
-import axios from "axios";
 import toast from "react-hot-toast";
+import axios from "axios";
+import config from "../../../utilies/envCongig";
+import { AuthProvider } from "../../../../AuthProvider/CreateContext";
+import { useContext, useState } from "react";
 import { useApiHeader } from "../../../utilies/token";
+import { useCustomQuery } from "../../../utilies/useCustomQuery";
 
-const NidTransaction = () => {
+const FieldTransaction = () => {
     const { token } = useContext(AuthProvider);
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
@@ -18,20 +18,19 @@ const NidTransaction = () => {
 
     const { data: transactionData, isLoading, refetch } = useCustomQuery({
         queryKey: ["nidTransactions", page, searchTerm],
-        url: `${config.backendUrl}/nidtransaction/get-all?page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
+        url: `${config.backendUrl}/fieldTransaction/get-all-field-Transaction?page=${page}&limit=${limit}&searchTerm=${searchTerm}`,
         headers: {
             Authorization: `Bearer ${token}`,
         },
     });
 
     const tableData = transactionData?.data || [];
-    const meta = transactionData?.meta || { page: 1, limit: 1, total: 0, totalPage: 1 };
+    const meta = transactionData?.meta || { page: 1, limit: 8, total: 0, totalPage: 1 };
 
     const handleDelete = async (id) => {
         try {
             const response = await axios.delete(
-                `${config.backendUrl}/nidtransaction/delete/${id}`, apiHeader
-            );
+                `${config.backendUrl}/nidtransaction/delete/${id}`, apiHeader);
             if (response.data?.success) {
                 toast.success("Transaction deleted successfully");
                 refetch();
@@ -41,10 +40,37 @@ const NidTransaction = () => {
         }
     };
 
+    const [updatingUserId, setUpdatingUserId] = useState(null);
+
+    const handleStatusChange = async (userId, newStatus) => {
+        if (!userId) {
+            toast.error("User ID not found for this transaction");
+            return;
+        }
+
+        setUpdatingUserId(userId);
+        try {
+            const response = await axios.patch(
+                `${config.backendUrl}/fieldTransaction/update-verification/${userId}`,
+                { status: newStatus },
+                apiHeader
+            );
+
+            if (response.data?.success) {
+                toast.success(`User verification updated to ${newStatus}`);
+                refetch();
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to update status");
+        } finally {
+            setUpdatingUserId(null);
+        }
+    };
+
 
     return (
         <div>
-            <DynamicHeader mainHeader={"Approved NID Transactions"} />
+            <DynamicHeader mainHeader={"Approved Field Transactions"} />
             <div className="p-6 bg-white rounded-lg shadow-sm">
                 <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <SearchInput
@@ -52,16 +78,16 @@ const NidTransaction = () => {
                             setSearchTerm(value);
                             setPage(1);
                         }}
-                        placeholder="Search by User ID, Gateway Transaction ID or Phone..."
+                        placeholder="Search by User ID, Transaction ID or Phone..."
                     />
                 </div>
 
-                {isLoading && tableData.length === 0 ? (
+                {isLoading ? (
                     <div className="h-64 w-full flex items-center justify-center">
                         <Loader2 className="w-10 h-10 animate-spin text-emerald-500" />
                     </div>
                 ) : (
-                    <div className="relative overflow-x-auto rounded-lg border border-gray-200">
+                    <div className="overflow-x-auto rounded-lg border border-gray-200">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
@@ -73,55 +99,80 @@ const NidTransaction = () => {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction Status</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Status</th>
                                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {tableData.length === 0 ? (
                                     <tr>
-                                        <td colSpan={9} className="px-6 py-10 text-center text-sm text-gray-500">
+                                        <td colSpan={10} className="px-6 py-10 text-center text-sm text-gray-500">
                                             No approved transactions matching current parameters.
                                         </td>
                                     </tr>
                                 ) : (
-                                    tableData.map((item, index) => (
-                                        <tr key={item._id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {(page - 1) * limit + index + 1}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {item?.userObjectId?.userID || "N/A"}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {item?.userObjectId?.fullName || "N/A"}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {item?.gatewayTransactionId || "N/A"}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {item?.userObjectId?.email || "N/A"}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {item?.phoneNumber || "N/A"}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                ৳ {item?.amount || "N/A"}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <span className="px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wide text-emerald-800 border border-emerald-300 bg-emerald-50">
-                                                    {item?.status || "APPROVED"}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
-                                                <button
-                                                    onClick={() => handleDelete(item._id)}
-                                                    className="text-red-600 hover:text-red-900 p-1 transition-colors inline-flex items-center"
-                                                >
-                                                    <Trash2 className="h-5 w-5" />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
+                                    tableData.map((item, index) => {
+                                        const currentUserId = item?.userObjectId?._id;
+                                        const userCurrentStatus = item?.userObjectId?.isFieldVerification ? "APPROVE" : "PENDING";
+
+                                        return (
+                                            <tr key={item._id} className="hover:bg-gray-50 transition-colors">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {(page - 1) * limit + index + 1}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {item?.userObjectId?.userID || "N/A"}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {item?.userObjectId?.fullName || "N/A"}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {item?.gatewayTransactionId || "N/A"}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {item?.userObjectId?.email || "N/A"}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {item?.phoneNumber || "N/A"}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    ৳ {item?.amount || "N/A"}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wide text-emerald-800 border border-emerald-300 bg-emerald-50">
+                                                        {item?.status || "APPROVED"}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                    <div className="flex items-center gap-2">
+                                                        <select
+                                                            disabled={updatingUserId === currentUserId}
+                                                            value={userCurrentStatus}
+                                                            onChange={(e) => handleStatusChange(currentUserId, e.target.value)}
+                                                            className={`text-xs font-semibold rounded-md border p-1.5 focus:outline-none cursor-pointer transition-colors ${userCurrentStatus === "APPROVE"
+                                                                ? "bg-emerald-50 border-emerald-300 text-emerald-800"
+                                                                : "bg-amber-50 border-amber-300 text-amber-800"
+                                                                }`}
+                                                        >
+                                                            <option value="PENDING">PENDING</option>
+                                                            <option value="APPROVE">APPROVE</option>
+                                                        </select>
+                                                        {updatingUserId === currentUserId && (
+                                                            <Loader2 className="w-4 h-4 animate-spin text-emerald-500" />
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                                    <button
+                                                        onClick={() => handleDelete(item._id)}
+                                                        className="text-red-600 hover:text-red-900 p-1 transition-colors inline-flex items-center"
+                                                    >
+                                                        <Trash2 className="h-5 w-5" />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
                                 )}
                             </tbody>
                         </table>
@@ -169,8 +220,8 @@ const NidTransaction = () => {
                                                     key={i + 1}
                                                     onClick={() => setPage(i + 1)}
                                                     className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${page === i + 1
-                                                            ? "z-10 bg-emerald-50 border-emerald-500 text-emerald-600"
-                                                            : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
+                                                        ? "z-10 bg-emerald-50 border-emerald-500 text-emerald-600"
+                                                        : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
                                                         }`}
                                                 >
                                                     {i + 1}
@@ -196,4 +247,4 @@ const NidTransaction = () => {
     );
 };
 
-export default NidTransaction;
+export default FieldTransaction;
