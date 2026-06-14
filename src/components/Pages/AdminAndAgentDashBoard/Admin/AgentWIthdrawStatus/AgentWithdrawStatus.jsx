@@ -1,16 +1,18 @@
+import { ChevronLeft, ChevronRight, Loader2, Trash2 } from "lucide-react";
 import { useContext, useState } from "react";
-import config from "../../../utilies/envCongig";
-import { useCustomQuery } from "../../../utilies/useCustomQuery";
 import { AuthProvider } from "../../../../AuthProvider/CreateContext";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
-import SearchInput from "../../../utilies/SearchInput";
+import { useCustomQuery } from "../../../utilies/useCustomQuery";
+import config from "../../../utilies/envCongig";
 import DynamicHeader from "../../../DynamicComponent/DynamicHeader";
+import SearchInput from "../../../utilies/SearchInput";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
-const Allwithdraw = () => {
+const AgentWithdrawStatus = () => {
     const { token } = useContext(AuthProvider);
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
-    const limit = 8;
+    const limit = 20;
 
     const { data: withdrawList, isLoading, refetch } = useCustomQuery({
         queryKey: ["withdrawlist", page, searchTerm],
@@ -25,23 +27,37 @@ const Allwithdraw = () => {
     const meta = withdrawList?.meta || { page: 1, limit: 8, total: 0, totalPage: 1 };
     console.log(tableData)
 
-    // const handleStatusChange = async (id, newStatus) => {
-    //     console.log(`Update status for ${id} to ${newStatus}`);
-    // };
 
-    // const handleDelete = async (id) => {
-    //     console.log(`Delete item ${id}`);
-    // };
+    const handleStatusChange = async (transactionId, newStatus) => {
+        console.log(newStatus)
+        try {
+            await axios.patch(
+                `${config.backendUrl}/withdraw/status/${transactionId}`,
+                { status: newStatus },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            refetch();
+            toast.success(`Transaction marked as ${newStatus}`);
+        } catch (error) {
+            console.error(error);
+            toast.error("You have already Approved this transaction");
+        }
+    };
+
+    const handleDelete = async (id) => {
+        console.log(`Delete item ${id}`);
+    };
 
     refetch();
-
     return (
         <div>
+            <Toaster position="top-right" reverseOrder={false} />
+
             <DynamicHeader
                 mainHeader={"Withdrawal Management"}
             // subHeaderName={`${tableData.length} total users`}
             />
-            <div className="p-6 ">
+            <div className="p-6">
                 <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <SearchInput
                         onSearch={(value) => {
@@ -67,70 +83,58 @@ const Allwithdraw = () => {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Number</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Withdraw</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    {/* <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th> */}
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {tableData.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={7} className="px-6 py-10 text-center text-sm text-gray-500">
-                                            No entries matching current parameters.
+                                {tableData.map((user, index) => (
+                                    <tr key={user._id} className="hover:bg-gray-50 transition-colors">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {(page - 1) * limit + index + 1}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {user?.userId?.userID || 'N/A'}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {user?.userId?.fullName || 'N/A'}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {user?.userId?.email || 'N/A'}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {user?.userId?.contactNo || 'N/A'}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            ৳ {user?.amount || 'N/A'}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {user?.method || 'N/A'}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                            <select
+                                                value={user?.status || "PENDING"}
+                                                onChange={(e) => handleStatusChange(user._id, e.target.value)}
+                                                className={`px-2 py-1 rounded border text-xs font-semibold uppercase outline-none bg-white cursor-pointer ${user?.status === "APPROVED"
+                                                        ? "text-emerald-800 border-emerald-300 bg-emerald-50"
+                                                        : "text-rose-800 border-rose-300 bg-rose-50"
+                                                    }`}
+                                            >
+                                                <option value="PENDING">PENDING</option>
+                                                <option value="APPROVED">APPROVED</option>
+                                            </select>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
+                                            <button
+                                                onClick={() => handleDelete(user._id)}
+                                                className="text-red-600 hover:text-red-900 p-1 transition-colors inline-flex items-center"
+                                            >
+                                                <Trash2 className="h-5 w-5" />
+                                            </button>
                                         </td>
                                     </tr>
-                                ) : (
-                                    tableData.map((user, index) => (
-                                        <tr key={user._id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {(page - 1) * limit + index + 1}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {user?.userId?.userID || 'N/A'}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {user?.userId?.fullName || 'N/A'}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {user?.userId?.email || 'N/A'}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                {user?.userId?.contactNo || 'N/A'}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                ৳ {user?.amount || 'N/A'}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <span className="px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wide text-emerald-800 border border-emerald-300 bg-emerald-50">
-                                                    {user?.status || "APPROVED"}
-                                                </span>
-                                            </td>
-                                            {/* <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <select
-                                                    value={user?.userId?.isActive || "ACTIVE"}
-                                                    onChange={(e) => handleStatusChange(user._id, e.target.value)}
-                                                    className={`px-2 py-1 rounded border text-xs font-semibold uppercase outline-none bg-white cursor-pointer ${user?.userId?.isActive === "ACTIVE"
-                                                            ? "text-emerald-800 border-emerald-300 bg-emerald-50"
-                                                            : user?.userId?.isActive === "INACTIVE"
-                                                                ? "text-gray-800 border-gray-300 bg-gray-50"
-                                                                : "text-amber-800 border-amber-300 bg-amber-50"
-                                                        }`}
-                                                >
-                                                    <option value="ACTIVE">Active</option>
-                                                    <option value="INACTIVE">Inactive</option>
-                                                    <option value="BLOCKED">Blocked</option>
-                                                </select>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
-                                                <button
-                                                    onClick={() => handleDelete(user._id)}
-                                                    className="text-red-600 hover:text-red-900 p-1 transition-colors inline-flex items-center"
-                                                >
-                                                    <Trash2 className="h-5 w-5" />
-                                                </button>
-                                            </td> */}
-                                        </tr>
-                                    ))
-                                )}
+                                ))}
                             </tbody>
                         </table>
 
@@ -204,4 +208,4 @@ const Allwithdraw = () => {
     );
 };
 
-export default Allwithdraw;
+export default AgentWithdrawStatus;

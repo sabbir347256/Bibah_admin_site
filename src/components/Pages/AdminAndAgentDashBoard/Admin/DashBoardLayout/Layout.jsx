@@ -111,6 +111,11 @@ const Layout = () => {
             label: "Field Transaction",
             icon: DollarSign,
           },
+          {
+            path: "/agent-withdraw-transaction",
+            label: "Agent Withdraw Transaction",
+            icon: DollarSign,
+          },
         ],
       }
     ] : []),

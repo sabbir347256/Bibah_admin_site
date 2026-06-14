@@ -18,20 +18,20 @@ const AllTransaction = () => {
         },
     });
 
-    const handleStatusChange = async (transactionId, newStatus) => {
-        try {
-            await axios.patch(
-                `${config.backendUrl}/transaction/status/${transactionId}`,
-                { status: newStatus },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            refetch();
-            toast.success(`Transaction marked as ${newStatus}`);
-        } catch (error) {
-            console.error(error);
-            toast.error("Failed to update transaction status");
-        }
-    };
+    // const handleStatusChange = async (transactionId, newStatus) => {
+    //     try {
+    //         await axios.patch(
+    //             `${config.backendUrl}/transaction/status/${transactionId}`,
+    //             { status: newStatus },
+    //             { headers: { Authorization: `Bearer ${token}` } }
+    //         );
+    //         refetch();
+    //         toast.success(`Transaction marked as ${newStatus}`);
+    //     } catch (error) {
+    //         console.error(error);
+    //         toast.error("Failed to update transaction status");
+    //     }
+    // };
 
     const handleDelete = async (transactionId) => {
         if (window.confirm("Are you sure you want to delete this transaction?")) {
@@ -50,7 +50,7 @@ const AllTransaction = () => {
 
     const tableData = transactionResponse?.data || [];
     const filterTableData = tableData?.filter(data => data?.isDeleted === false);
-    
+
 
     if (isLoading) {
         return (
@@ -84,7 +84,7 @@ const AllTransaction = () => {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filterTableData?.map((transaction,index) => (
+                        {filterTableData?.map((transaction, index) => (
                             <tr key={transaction._id}>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {index + 1}
@@ -105,6 +105,11 @@ const AllTransaction = () => {
                                     {transaction.amount}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wide text-emerald-800 border border-emerald-300 bg-emerald-50">
+                                        {transaction?.status || "APPROVED"}
+                                    </span>
+                                </td>
+                                {/* <td className="px-6 py-4 whitespace-nowrap text-sm">
                                     <select
                                         value={transaction.status || "PENDING"}
                                         onChange={(e) => handleStatusChange(transaction._id, e.target.value)}
@@ -119,7 +124,7 @@ const AllTransaction = () => {
                                         <option value="APPROVED">Approved</option>
                                         <option value="REJECTED">Rejected</option>
                                     </select>
-                                </td>
+                                </td> */}
                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                                     <button
                                         onClick={() => handleDelete(transaction._id)}
