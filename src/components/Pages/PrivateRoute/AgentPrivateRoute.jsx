@@ -4,7 +4,7 @@ import { Navigate, Outlet, useLocation } from "react-router";
 import { Loader2 } from "lucide-react";
 
 const AgentPrivateRoute = () => {
-    const { user, loading } = useContext(AuthProvider);
+   const { user, loading } = useContext(AuthProvider);
     const location = useLocation();
 
     if (loading) {
@@ -15,11 +15,11 @@ const AgentPrivateRoute = () => {
         );
     }
 
-    if (user && (user.role === 'AGENT')) {
+    if (user && user.role === 'AGENT' ||  user?.role === 'ADMIN') {
         return <Outlet></Outlet>;
     }
 
-    return <Navigate to="/" state={{ from: location }} replace />;
+    return <Navigate to="/admin-login" state={{ from: location }} replace />;
 };
 
 export default AgentPrivateRoute;

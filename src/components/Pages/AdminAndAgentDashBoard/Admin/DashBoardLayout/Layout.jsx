@@ -11,6 +11,7 @@ import {
   DollarSign,
   VerifiedIcon,
   DockIcon,
+  User2Icon,
 } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
@@ -82,6 +83,13 @@ const Layout = () => {
             icon: DollarSign,
           }
         ] : []),
+        ...(user?.role === "AGENT" ? [
+          {
+            path: "/all-field-verification",
+            label: "Field Verification List",
+            icon: User2Icon,
+          }
+        ] : []),
         ...(user?.role === "ADMIN" ? [
           {
             path: "/all-users",
@@ -90,7 +98,7 @@ const Layout = () => {
           }
         ] : []),
         ...(user?.role === "ADMIN" ? [
-          { path: "/all-transaction", label: "All Transaction", icon: DollarSign }
+          { path: "/all-transaction", label: "User Recharge Transaction", icon: DollarSign }
         ] : []),
         ...(user?.role === "ADMIN" ? [
           { path: "/all-document", label: "All Nid Documents", icon: DockIcon }
@@ -103,12 +111,12 @@ const Layout = () => {
         items: [
           {
             path: "/all-document-transaction",
-            label: "Document Transaction",
+            label: "Document Verification",
             icon: DollarSign,
           },
           {
             path: "/field-transaction",
-            label: "Field Transaction",
+            label: "Field Verification",
             icon: DollarSign,
           },
           {
@@ -479,9 +487,9 @@ const Layout = () => {
 
                 <div className="flex flex-col">
                   <span className="text-sm font-bold text-gray-900 leading-tight group-hover:text-red-600 transition-colors">
-                    Admin User
+                    {user?.role === 'ADMIN' ? 'Admin User' : 'AGENT'}
                   </span>
-                  <span className="text-xs text-gray-400">Super Admin</span>
+                  <span className="text-xs text-gray-400">{user?.role === 'ADMIN' ? 'Super Admin' : 'Agent Panel'}</span>
                 </div>
 
                 <ChevronDown

@@ -21,6 +21,7 @@ import AgentPrivateRoute from "./components/Pages/PrivateRoute/AgentPrivateRoute
 import NidTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/NidTransaction/NidTransaction";
 import FieldTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/FieldTransaction/FieldTransaction";
 import AgentWithdrawStatus from "./components/Pages/AdminAndAgentDashBoard/Admin/AgentWIthdrawStatus/AgentWithdrawStatus";
+import FieldVerificationList from "./components/Pages/AdminAndAgentDashBoard/Agent/FiledVerificatoinList/FieldVerificationList";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +34,6 @@ const router = createBrowserRouter([
         path: "/",
         element: <Layout></Layout>,
         children: [
-
           {
             element: <AdminPrivateRoute />,
             children: [
@@ -66,29 +66,36 @@ const router = createBrowserRouter([
                 element: <NidTransaction></NidTransaction>
               },
               {
-                path : "/field-transaction",
-                element : <FieldTransaction></FieldTransaction>
+                path: "/field-transaction",
+                element: <FieldTransaction></FieldTransaction>
               },
               {
-                path : "/agent-withdraw-transaction",
-                element : <AgentWithdrawStatus></AgentWithdrawStatus>
+                path: "/agent-withdraw-transaction",
+                element: <AgentWithdrawStatus></AgentWithdrawStatus>
               },
             ]
           },
           {
             element: <AgentPrivateRoute />,
             children: [
+              // {
+              //   path: '/',
+              //   element: <Allwithdraw></Allwithdraw>
+              // },
               {
                 path: '/all-withdraw',
                 element: <Allwithdraw></Allwithdraw>
-              }
+              },
+              {
+                path: "/all-field-verification",
+                element: <FieldVerificationList></FieldVerificationList>
+              },
             ]
           },
           {
             path: '/profile',
             element: <Profile></Profile>
           },
-
         ]
       }
     ]
@@ -97,7 +104,7 @@ const router = createBrowserRouter([
     path: "/admin-login",
     element: <Login></Login>
   }
-]);
+])
 
 createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient}>
