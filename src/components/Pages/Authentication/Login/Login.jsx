@@ -87,7 +87,7 @@ const Login = () => {
                     <div>
                         <div className="flex justify-between mb-1.5">
                             <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Password</label>
-                            <a href="#" className="text-xs font-bold text-red-600 hover:underline">Forgot?</a>
+                            {/* <a href="#" className="text-xs font-bold text-red-600 hover:underline">Forgot?</a> */}
                         </div>
                         <div className="relative">
                             <input
