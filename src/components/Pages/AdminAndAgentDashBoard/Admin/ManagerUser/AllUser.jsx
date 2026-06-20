@@ -40,6 +40,7 @@ const AllUser = () => {
     };
 
     const handleDelete = async (userId) => {
+        console.log(userId);
         if (window.confirm("Are you sure you want to delete this user?")) {
             try {
                 await axios.delete(`${config.backendUrl}/user/${userId}`, {
