@@ -22,6 +22,7 @@ import NidTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/NidT
 import FieldTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/FieldTransaction/FieldTransaction";
 import AgentWithdrawStatus from "./components/Pages/AdminAndAgentDashBoard/Admin/AgentWIthdrawStatus/AgentWithdrawStatus";
 import FieldVerificationList from "./components/Pages/AdminAndAgentDashBoard/Agent/FiledVerificatoinList/FieldVerificationList";
+import PremiumTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/PremiumTransaction/PremiumTransaction";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
               {
                 path: "/agent-withdraw-transaction",
                 element: <AgentWithdrawStatus></AgentWithdrawStatus>
+              },
+              {
+                path: "/premium-transaction",
+                element: <PremiumTransaction></PremiumTransaction>
               },
             ]
           },

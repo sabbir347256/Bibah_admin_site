@@ -12,6 +12,7 @@ import {
   VerifiedIcon,
   DockIcon,
   User2Icon,
+  Gem,
 } from "lucide-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
@@ -123,6 +124,11 @@ const Layout = () => {
             path: "/agent-withdraw-transaction",
             label: "Agent Withdraw Transaction",
             icon: DollarSign,
+          },
+          {
+            path: "/premium-transaction",
+            label: "Premium Member",
+            icon: Gem,
           },
         ],
       }
