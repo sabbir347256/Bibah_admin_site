@@ -102,6 +102,9 @@ const Layout = () => {
           { path: "/all-transaction", label: "User Recharge Transaction", icon: DollarSign }
         ] : []),
         ...(user?.role === "ADMIN" ? [
+          { path: "/contact-payment", label: "Contact Transaction", icon: DollarSign }
+        ] : []),
+        ...(user?.role === "ADMIN" ? [
           { path: "/all-document", label: "All Nid Documents", icon: DockIcon }
         ] : []),
       ],

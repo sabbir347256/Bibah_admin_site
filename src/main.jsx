@@ -23,6 +23,7 @@ import FieldTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/Fi
 import AgentWithdrawStatus from "./components/Pages/AdminAndAgentDashBoard/Admin/AgentWIthdrawStatus/AgentWithdrawStatus";
 import FieldVerificationList from "./components/Pages/AdminAndAgentDashBoard/Agent/FiledVerificatoinList/FieldVerificationList";
 import PremiumTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/PremiumTransaction/PremiumTransaction";
+import ContactPayment from "./components/Pages/AdminAndAgentDashBoard/Admin/ContactNumberPayment/ContactPayment";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
               {
                 path: "/premium-transaction",
                 element: <PremiumTransaction></PremiumTransaction>
+              },
+              {
+                path: "/contact-payment",
+                element: <ContactPayment></ContactPayment>
               },
             ]
           },
