@@ -7,7 +7,6 @@ import config from "../Pages/utilies/envCongig";
 const AuthContext = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem("accessToken"));
 
-
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["userProfile"],
     queryFn: () =>
