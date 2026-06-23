@@ -146,12 +146,12 @@ const Dashboard = () => {
                                 Active Members
                             </p>
                         </div>
-                        <div>
+                        {/* <div>
                             <h3 className="text-4xl font-bold">1.4K+</h3>
                             <p className="text-red-100">
                                 Successful Matches
                             </p>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
