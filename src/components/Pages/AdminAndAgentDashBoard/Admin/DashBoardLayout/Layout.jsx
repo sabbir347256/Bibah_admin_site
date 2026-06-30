@@ -99,6 +99,13 @@ const Layout = () => {
           }
         ] : []),
         ...(user?.role === "ADMIN" ? [
+          {
+            path: "/meetup",
+            label: "MeetUP Information",
+            icon: Users2,
+          }
+        ] : []),
+        ...(user?.role === "ADMIN" ? [
           { path: "/all-transaction", label: "User Recharge Transaction", icon: DollarSign }
         ] : []),
         ...(user?.role === "ADMIN" ? [

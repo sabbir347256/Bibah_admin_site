@@ -24,6 +24,7 @@ import AgentWithdrawStatus from "./components/Pages/AdminAndAgentDashBoard/Admin
 import FieldVerificationList from "./components/Pages/AdminAndAgentDashBoard/Agent/FiledVerificatoinList/FieldVerificationList";
 import PremiumTransaction from "./components/Pages/AdminAndAgentDashBoard/Admin/PremiumTransaction/PremiumTransaction";
 import ContactPayment from "./components/Pages/AdminAndAgentDashBoard/Admin/ContactNumberPayment/ContactPayment";
+import Meetup from "./components/Pages/AdminAndAgentDashBoard/Admin/MeetUp/Meetup";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
               {
                 path: "/contact-payment",
                 element: <ContactPayment></ContactPayment>
+              },
+              {
+                path: "/meetup",
+                element: <Meetup></Meetup>
               },
             ]
           },
